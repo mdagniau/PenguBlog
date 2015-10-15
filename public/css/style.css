@@ -1,0 +1,313 @@
+/*********************************************
+ * THEME & NAVIGATION
+ *********************************************/
+.demo-layout-transparent {
+  background: url('../img/banniere.jpg') center / cover;
+}
+.demo-layout-transparent .mdl-layout__header,
+.demo-layout-transparent .mdl-layout__drawer-button {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: white;
+}
+.mdl-navigation__link{
+  font-size: 1em !important;
+  vertical-align: middle !important;
+  font-weight: bold !important;
+}
+
+.icon{
+  margin : 0.5em 0.5em 0.5em 0.5em !important;
+  padding : 0.2em 0.2em 0.2em 0.2em !important;
+}
+
+.mdl-layout-title {
+  font-size: 2em !important;
+}
+
+.nav{
+  font-size: 1.5em !important;
+}
+
+.pseudo{
+  color: #4DD0E1 !important;
+  margin : 0em !important;
+  padding: 0.1em 0em 0.1em 0.5em !important;
+}
+
+.iconPseudo{
+  width: 20%;
+  float: right;
+  vertical-align: middle;
+}
+
+.list{
+  list-style:none;
+  padding-left: 4em !important;
+}
+
+
+
+
+
+/*********************************************
+ * DIALOG BOXES
+ *********************************************/
+.wrapperOutside {
+   display: table;
+   width: 100vw;
+   height: 100vh;
+}
+
+.wrapperInside {
+  margin-top: 0em !important;
+  padding-top: 0em !important;
+  display: table-cell;
+}
+
+/*
+The attributes below style the css
+dialog window, and content.
+*/
+
+.dialogContainer {
+  /* Form */
+  min-width: 280px;
+  width: 500px;
+  height: auto;
+  /*
+  Drop Shadow
+  a. Horizontal shadow
+  b. Vertical shadow
+  c. Blur
+  d. Spread
+  e. Color
+  */
+  -webkit-box-shadow: 0 -2px 25px 0 rgba(0, 0, 0, 0.15), 0 13px 25px 0 rgba(0, 0, 0, 0.3);
+  background-color: #FFFFFF;
+  /* Internal padding */
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  /* External padding */
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0; 
+}
+
+.dialogContent { 
+  /* Form */   
+  width: auto;
+  height: auto;
+  background-color: #FFFFFF;
+  /* Corner radius */
+  border-top-left-radius:2px;
+  border-top-right-radius:2px;
+  border-bottom-right-radius:0;
+  border-bottom-left-radius:0;  
+  border : 0.1em solid rgba(33,150,243,0.9);  
+  /* Internal padding */
+  padding-top: 21px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 12px;
+  /* External padding */
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;     
+}
+
+.dialogContentTitle {
+  /* Form */  
+  background-color: #FFFFFF;
+  /* Typography */  
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: rgba(0,0,0,.8);
+  line-height: 24px;  
+  text-align: left;
+  letter-spacing: 0.03px;
+  /* Internal padding */
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  /* External padding */
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;    
+}
+
+.dialogContentBody {
+  /* Typography */
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(0,0,0,.5);
+  line-height: 24px;    
+  text-align: left;
+  letter-spacing: 0.03px;
+  /* Internal padding */
+  padding-top: 14px;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;   
+  /* External padding */
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;       
+}
+
+.dialogActionBar {
+  /* Form */
+  width: auto;
+  height: 48px;
+  background-color: #FFFFFF;
+  text-align: right;
+  /* Corner radius */
+  border-top-left-radius:0;
+  border-top-right-radius:0;
+  border-bottom-right-radius:2px;
+  border-bottom-left-radius:2px;  
+  /* Internal padding */
+  padding-top: 0;
+  padding-left: 16px;
+  padding-right: 15px;
+  padding-bottom: 8px;  
+  /* External padding */
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;      
+}
+
+/*
+The attributes below style the
+hit target.
+*/
+
+.buttonTouchTarget {
+  display: inline-block;
+  background-color: rgba(0,0,0,0);
+  /* Remove grey background on link clicked in ios safari */
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+/*
+The attributes below style the
+flat button based on the Google
+material design language.
+*/
+
+.buttonFlat {
+  /* Form */
+  display: inline-block;
+  height: 36px;
+  background-color: rgba(9,9,9,0);
+  /* Typography */
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: rgba(33,150,243,0.9);  
+  line-height: 36px;    
+  text-align: center;
+  letter-spacing: 0.4px;     
+  /* Internal padding */
+  padding-top: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 0;
+  /* External padding – Touch target size */
+  margin-top: 6px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 6px;
+
+  float:left;
+}
+
+.buttonCustom{
+  color:pink !important;
+  float:right !important;
+}
+
+.formInputs{
+  width: 50%;
+  margin-left: 25%;
+}
+
+
+
+
+
+/*********************************************
+ * ARTICLES
+ *********************************************/
+h1
+{
+  text-align: center !important;
+  color : white;
+  text-shadow: rgba(33,150,243,0.9) 1px 1px, rgba(33,150,243,0.9) -1px 1px, rgba(33,150,243,0.9) -1px -1px, rgba(33,150,243,0.9) 1px -1px;  
+  background-color: rgba(198,243,248,0.6);
+}
+
+.iconTitle{
+  vertical-align: top;
+  float:left;
+  margin-top: 0em !important;
+  margin-left: 0.1em !important;
+  padding-top: 0em !important;
+}
+
+.imgArticle
+{
+  width: 25%;
+  float : right;
+  vertical-align: middle;
+}
+
+.widthArticle{
+  min-width: 50em !important;
+}
+
+.wrapperInsideArticle{
+  margin-bottom: 0em !important;
+  padding-bottom: 0.5em !important;
+}
+
+.article{
+  border : 0.1em solid rgba(33,150,243,0.9);
+  min-height: 22em !important;
+  height: auto;
+}
+
+
+
+
+
+/*********************************************
+ * COMMENTAIRES
+ *********************************************/
+
+.widthComment{
+  min-width: 50em !important;
+  min-height: 2em !important;
+  height: 2em !important;
+  padding-top: 0em !important;
+  margin-top: 0em !important;
+}
+
+.inputComment{
+  padding-top: 0em !important;
+  margin-top: 0em !important;
+  padding-left: 7.5em;
+  width: 40em !important;
+  height: 2em !important;
+}
+
