@@ -1,0 +1,28 @@
+{
+  "name": "pengu",
+  "version": "1.0.0",
+  "description": "Server for PenguBlog",
+  "main": "server.js",
+  "scripts": {
+    "test": "run tests",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdagniau/PenguBlog.git"
+  },
+  "keywords": [
+    "pengu",
+    "blog",
+    "js"
+  ],
+  "author": "mdagniau",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdagniau/PenguBlog/issues"
+  },
+  "homepage": "https://github.com/mdagniau/PenguBlog#readme",
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}
