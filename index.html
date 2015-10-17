@@ -16,6 +16,7 @@
 <body>
   <div class="demo-layout-transparent mdl-layout mdl-js-layout"
     ng-controller="blogCtrl">
+    <!-- NAVBAR HEADER -->
     <header class="mdl-layout__header mdl-layout__header--transparent">
       <div class="mdl-layout__header-row">
         <!-- Title-->
@@ -25,23 +26,27 @@
         <!-- Navigation -->
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link nav" href="" ng-click="login()"><img
-            src="public/img/icon/account.png">Log in</a> <a
+            src="public/img/icon/account.png"/>Log in</a> <a
             class="mdl-navigation__link nav" href="" ng-click="signup()"><img
-            src="public/img/icon/account-plus.png">Sign up</a>
+            src="public/img/icon/account-plus.png"/>Sign up</a>
         </nav>
     </header>
 
-    <div class="mdl-layout__drawer">
+
+
+    <!-- NAVBAR LEFT -->
+    <div id="navBarLeft" class="mdl-layout__drawer">
       <h6 id="userPseudo" class="mdl-layout-title pseudo"
         ng-model="user.pseudo">
         Pengu name <img src="public/img/logo.png" class="iconPseudo"></img>
       </h6>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href=""><img
+      <!--span class="msgError" ng-show="!userConnected"><img src="public/img/icon/alert.png"></img>You have to connect to see all functionnalities.</span-->
+      <nav class="mdl-navigation" ng-show="!userConnected">
+        <a class="mdl-navigation__link" href="" ng-click="myAccount()"><img
           src="public/img/icon/account-star-variant.png" class="icon"></img>My
-          account</a> <a class="mdl-navigation__link" href=""><img
+          account</a> <a class="mdl-navigation__link" href="" ng-click="addAnArticle()"><img
           src="public/img/icon/comment-text-outline.png" class="icon">Add
-          an article</a>  <a class="mdl-navigation__link" href=""><img
+          an article</a>  <a class="mdl-navigation__link" href="" ng-click="managePublications()"><img
           src="public/img/icon/settings.png" class="icon">Manage my publications</a><a class="mdl-navigation__link" href=""><img
           src="public/img/icon/calendar.png" class="icon">Year {{year}}</a>
         <a class="mdl-navigation__link list" href=""><img
@@ -50,33 +55,38 @@
       </nav>
     </div>
 
+
+    <!-- SINGLE PAGE APPLICATION -->
     <main class="mdl-layout__content">
-    <h1>The best blog about Pengu !</h1>
-    <div id="loginDialog" ng-show="showLogin" class="wrapperOutside"
-      ng-controller="loginCtrl">
+    <h1 class="headerFooter">The best blog about Pengu !</h1>
+
+
+    <!-- LOGIN DIALOG -->
+    <div id="loginDialog" ng-show="showLogin" class="wrapperOutside">
       <div class="wrapperInside">
         <!-- Dialog -->
         <form novalidate class="simple-form">
           <div class="dialogContainer">
             <!-- Dialog title and body -->
             <div class="dialogContent">
-              <div class="dialogContentTitle">Log in</div>
+              <div class="dialogContentTitle"><img
+            src="public/img/icon/account (1).png"/> Log in</div>
               <div class="dialogContentBody">
-                <input type="text" placeholder="Pseudo" ng-model="user.pseudo"></input><br />
-                <input type="password" placeholder="Password"
+                <input type="text" placeholder="Pseudo" class="formInputs" ng-model="user.pseudo"></input><br />
+                <input type="password" class="formInputs" placeholder="Password"
                   ng-model="user.password"></input>
               </div>
             </div>
             <!-- Dialog action bar -->
             <div class="dialogActionBar">
               <!-- Buttons -->
-              <a class="buttonTouchTarget" id="buttonOneTouchTarget"
+              <a class="buttonTouchTarget" id="buttonOneTouchTarget" href=""
                 ng-click="cancelLogin()">
                 <div class="buttonFlat" id="cancelLogin" fit>CANCEL</div>
               </a>
               <!-- This comment removes 4px gap between buttons-->
-              <a class="buttonTouchTarget" id="buttonTwoTouchTarget"
-                ng-click="submitLoginForm(user)">
+              <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
+                ng-click="submitDialog(showLogin, user)">
                 <div class="buttonFlat buttonCustom" id="submitLoginForm">SUBMIT</div>
               </a>
             </div>
@@ -85,41 +95,44 @@
       </div>
     </div>
 
-    <div id="signupDialog" ng-show="showSignup" class="wrapperOutside"
-      ng-controller="signupCtrl">
+
+
+    <!-- SIGN UP DIALOG -->
+    <div id="signupDialog" ng-show="showSignup" class="wrapperOutside">
       <div class="wrapperInside">
         <!-- Dialog -->
         <form novalidate class="simple-form">
           <div class="dialogContainer">
             <!-- Dialog title and body -->
             <div class="dialogContent">
-              <div class="dialogContentTitle">Sign up</div>
-              <div class="dialogContentBody">
-                <input class="formInputs" type="text" placeholder="Pseudo"
-                  ng-model="newUser.pseudo"></input> <br />
-                <input class="formInputs" type="text" placeholder="Lastname"
-                  ng-model="newUser.lastname"></input><br /> <input
+            <div class="dialogContentTitle"><img
+            src="public/img/icon/account-plus(1).png"/> Sign up</div>
+            <div class="dialogContentBody">
+                <span class="formLabels">Pseudo </span><input class="formInputs" type="text" placeholder="Pseudo"
+                  ng-model="newUser.pseudo" required></input><br />
+                <span class="formLabels">Lastname </span><input class="formInputs" type="text" placeholder="Lastname"
+                  ng-model="newUser.lastname" required></input><br /><span class="formLabels">Firstname </span><input
                   class="formInputs" type="text" placeholder="Firstname"
-                  ng-model="newUser.firstname"></input> <br />
-                <input class="formInputs" type="email" placeholder="Email"
-                  ng-model="newUser.email"></input> <br />
-                <input class="formInputs" type="password" placeholder="Password"
-                  ng-model="newUser.password"></input><br /> <input
+                  ng-model="newUser.firstname" required></input> <br />
+                <span class="formLabels">Email </span><input class="formInputs" type="email" placeholder="Email"
+                  ng-model="newUser.email" required></input><br />
+                <span class="formLabels">Password </span><input class="formInputs" type="password" placeholder="Password"
+                  ng-model="newUser.password" required></input><br /> <span class="formLabels">Confirm password </span><input
                   class="formInputs" type="password"
                   placeholder="Confirm password"
-                  ng-model="newUser.confirmPassword"></input>
+                  ng-model="newUser.confirmPassword" required></input>
               </div>
             </div>
             <!-- Dialog action bar -->
             <div class="dialogActionBar">
               <!-- Buttons -->
-              <a class="buttonTouchTarget" id="buttonOneTouchTarget"
+              <a class="buttonTouchTarget" id="buttonOneTouchTarget" href=""
                 ng-click="cancelSignup()">
                 <div class="buttonFlat" id="cancelSignup" fit>CANCEL</div>
               </a>
               <!-- This comment removes 4px gap between buttons-->
-              <a class="buttonTouchTarget" id="buttonTwoTouchTarget"
-                ng-click="submitLoginForm(newUser)">
+              <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
+                ng-click="submitSignup">
                 <div class="buttonFlat buttonCustom" id="submitSignupForm">SUBMIT</div>
               </a>
             </div>
@@ -128,17 +141,144 @@
       </div>
     </div>
 
-    <div id="lastArticle" ng-show="true" class="wrapperOutside"
-      ng-controller="commentCtrl">
+
+
+    <!-- MY ACCOUNT DIALOG -->
+    <div id="myAccountDialog" ng-show="showAccount" class="wrapperOutside">
+      <div class="wrapperInside">
+        <!-- Dialog -->
+        <form novalidate class="simple-form">
+          <div class="dialogContainer">
+            <!-- Dialog title and body -->
+            <div class="dialogContent">
+              <div class="dialogContentTitle"><img
+          src="public/img/icon/account-star-variant.png" class="icon"></img> My account<a href="" ng-click="editAccount()"><img
+          src="public/img/icon/edit.png" class="iconMyAccount"></img></a></div>
+              <div class="dialogContentBody">
+                <span class="formLabels">Pseudo </span><input class="formInputs" type="text" placeholder="Pseudo"
+                  ng-model="user.pseudo" ng-disabled="editVar"></input><br />
+                <span class="formLabels">Lastname </span><input class="formInputs" type="text" placeholder="Lastname"
+                  ng-model="user.lastname" ng-disabled="editVar"></input><br /><span class="formLabels">Firstname </span><input
+                  class="formInputs" type="text" placeholder="Firstname"
+                  ng-model="user.firstname" ng-disabled="editVar"></input> <br />
+                <span class="formLabels">Email </span><input class="formInputs" type="email" placeholder="Email"
+                  ng-model="user.email" ng-disabled="editVar"></input><br />
+                <span class="formLabels">Password </span><input class="formInputs" type="password" placeholder="Password"
+                  ng-model="user.password" ng-disabled="editVar"></input><br /> <input
+                  class="formInputs" type="password"
+                  placeholder="Confirm password"
+                  ng-model="newUser.confirmPassword" ng-show="false"></input>
+              </div>
+            </div>
+            <!-- Dialog action bar -->
+            <div class="dialogActionBar">
+              <!-- Buttons -->
+              <a class="buttonTouchTarget" id="buttonOneTouchTarget" href=""
+                ng-click="cancelMyAccount()">
+                <div class="buttonFlat" id="cancelMyAccount" fit>CANCEL</div>
+              </a>
+              <!-- This comment removes 4px gap between buttons-->
+              <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
+                ng-click="submitSignup">
+                <div class="buttonFlat buttonCustom" id="submitSignupForm">SUBMIT</div>
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ADD AN ARTICLE DIALOG -->
+    <div id="addAnArticleForm" ng-show="newArticle" class="wrapperOutside wrapperInsideArticle">
       <div class="wrapperInside wrapperInsideArticle">
         <!-- Dialog -->
         <div class="dialogContainer widthArticle">
           <!-- Dialog title and body -->
           <div class="dialogContent article">
-            <div class="dialogContentTitle" id="titleArticle"><img
-          src="public/img/icon/heart-outline.png" class="icon iconTitle"> Title</div>
+            <span class="formLabels dialogContentBody">Title... </span><input class="dialogContentTitle" id="titleNewArticle"></input>
             <div class="dialogContentBody">
-              <div id="bodyArticle">Body Article</div>
+              <span class="formLabels">Write your article... </span><br/><textarea type="text" id="bodyNewArticle" class="inputNewArticle"></textarea>
+              <img src="public/img/peng.jpg" class="imgArticle"></img>
+            </div>
+          </div>
+          <!-- Dialog action bar -->
+          <div class="dialogActionBar">
+            <!-- Buttons -->
+              <a class="buttonTouchTarget" id="buttonOneTouchTarget" href=""
+                ng-click="cancelNewArticle()">
+                <div class="buttonFlat" id="cancelNewArticle" fit>CANCEL</div>
+              </a>
+
+            <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
+              ng-click="sendArticle()">
+              <div class="buttonFlat buttonCustom" id="sendArticleButton">SEND ARTICLE <img
+          src="public/img/icon/telegram.png" class="icon"></div>
+              </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- MANAGE PUBLICATIONS DIALOG -->
+    <div id="managePublicationsDialog" ng-show="settings" class="wrapperOutside">
+      <div class="wrapperInside">
+        <!-- Dialog -->
+        <form novalidate class="simple-form">
+          <div class="dialogContainer">
+            <!-- Dialog title and body -->
+            <div class="dialogContent">
+              <div class="dialogContentTitle"><img
+          src="public/img/icon/settings.png" class="icon"> Manage publications</div>
+              <div class="dialogContentBody">
+                <span class="formLabels">Pseudo </span><input class="formInputs" type="text" placeholder="Pseudo"
+                  ng-model="user.pseudo" ng-disabled="editVar"></input><br />
+                <span class="formLabels">Lastname </span><input class="formInputs" type="text" placeholder="Lastname"
+                  ng-model="user.lastname" ng-disabled="editVar"></input><br /><span class="formLabels">Firstname </span><input
+                  class="formInputs" type="text" placeholder="Firstname"
+                  ng-model="user.firstname" ng-disabled="editVar"></input> <br />
+                <span class="formLabels">Email </span><input class="formInputs" type="email" placeholder="Email"
+                  ng-model="user.email" ng-disabled="editVar"></input><br />
+                <span class="formLabels">Password </span><input class="formInputs" type="password" placeholder="Password"
+                  ng-model="user.password" ng-disabled="editVar"></input><br /> <input
+                  class="formInputs" type="password"
+                  placeholder="Confirm password"
+                  ng-model="newUser.confirmPassword" ng-show="false"></input>
+              </div>
+            </div>
+            <!-- Dialog action bar -->
+            <div class="dialogActionBar">
+              <!-- Buttons -->
+              <a class="buttonTouchTarget" id="buttonOneTouchTarget" href=""
+                ng-click="cancelMyAccount()">
+                <div class="buttonFlat" id="cancelMyAccount" fit>CANCEL</div>
+              </a>
+              <!-- This comment removes 4px gap between buttons-->
+              <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
+                ng-click="submitSignup">
+                <div class="buttonFlat buttonCustom" id="submitSignupForm">SUBMIT</div>
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ARTICLE AND COMMENT -->
+    <div id="listArticles" ng-repeat="i in getNumber(numberArticles) track by $index">
+      <!-- ARTICLE DIALOG -->
+      <div id="article{{$index}}" ng-show="showArticle" class="wrapperOutside wrapperInsideArticle" ng-controller="articleCtrl" >
+      <div class="wrapperInside wrapperInsideArticle">
+        <!-- Dialog -->
+        <div class="dialogContainer widthArticle">
+          <!-- Dialog title and body -->
+          <div class="dialogContent article">
+            <div class="dialogContentTitle" id="titleArticle" ng-model="article.title"><a class="buttonTouchTarget" href="" ng-click="addFavorite($index)"><img id="favoriteIcon{{$index}}"
+          src="public/img/icon/heart-outline.png" class="icon iconTitle"></a> Title {{article.title}}</div>
+            <div class="dialogContentBody">
+              <div id="bodyArticle" ng-model="article.body">Body Article {{article.body}}</div>
               <img src="public/img/peng.jpg" class="imgArticle"></img>
             </div>
           </div>
@@ -147,8 +287,8 @@
             <!-- Buttons -->
             <div class="buttonFlat" id="infosArticle" fit>AUTHOR - DATE
               - ...</div>
-            <a class="buttonTouchTarget" id="buttonTwoTouchTarget"
-              ng-click="openCommentForm()">
+            <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
+              ng-click="openCommentForm($index)">
               <div class="buttonFlat buttonCustom" id="addCommentButton"><img
           src="public/img/icon/comment-plus-outline.png" class="icon">ADD
                 A COMMENT</div>
@@ -156,38 +296,45 @@
           </div>
         </div>
       </div>
+      </div>
+
+
+      <!-- ADD A COMMENT DIALOG -->
+      <div id="addComment{{$index}}" ng-show="commentOn" class="wrapperOutside">
+      <div class="wrapperInside">
+      <!-- Dialog -->
+        <div class="dialogContainer widthComment">
+        <!-- Dialog title and body -->
+          <div class="dialogContent">
+            <div class="dialogContentTitle">Add comment...</div>
+            <div class="dialogContentBody">
+              <input class="inputComment" type="text" placeholder="Add your comment here..."
+                 id="bodyComment" ng-model="comment.body"></input>
+            </div>
+        </div>
+        <!-- Dialog action bar -->
+        <div class="dialogActionBar">
+        <!-- Buttons -->
+          <a class="buttonTouchTarget" id="buttonOneTouchTarget" href=""
+            ng-click="cancelComment()">
+            <div class="buttonFlat" id="cancelComment" fit>CANCEL</div>
+          </a> 
+          <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
+            ng-click="submitCommentForm(bodycomment)">
+            <div class="buttonFlat buttonCustom" id="sendComment">SEND
+              <img src="public/img/icon/telegram.png" class="icon">
+            </div>
+          </a>
+        </div>
+      </div>
+      </div>
     </div>
-    <div id="addComment" ng-show="commentOn" class="wrapperOutside">
-                <div class="wrapperInside">
-                  <!-- Dialog -->
-                  <div class="dialogContainer widthComment">
-                    <!-- Dialog title and body -->
-                    <div class="dialogContent">
-                      <div class="dialogContentBody">
-                        <input class="inputComment" type="text" placeholder="Add your comment here..." ng-model="bodyComment"
-                          id="bodyComment"></input>
-                      </div>
-                    </div>
-                    <!-- Dialog action bar -->
-                    <div class="dialogActionBar">
-                      <!-- Buttons -->
-                      <a class="buttonTouchTarget" id="buttonOneTouchTarget"
-                        ng-click="cancelComment()">
-                        <div class="buttonFlat" id="cancelComment" fit>CANCEL</div>
-                      </a> <a class="buttonTouchTarget" id="buttonTwoTouchTarget"
-                        ng-click="sendComment(bodycomment)">
-                        <div class="buttonFlat buttonCustom" id="sendComment">SEND <img
-          src="public/img/icon/telegram.png" class="icon"></div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
   
-    <div id="footer">Marie DAGNIAU - Est^èphe SUSTRAC</div>
-    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer" class="headerFooter footer">&copy; Marie DAGNIAU - Est&egrave;phe SUSTRAC</div>
+  </main>
   </div>
 </body>
 <script src="public/js/app.js"></script>

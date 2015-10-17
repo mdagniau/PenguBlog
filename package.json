@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "run tests",
-    "start": "node server.js"
+    "start": "supervisor ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/mdagniau/PenguBlog#readme",
   "dependencies": {
-    "express": "^4.13.3"
+    "pg":"*",
   }
 }

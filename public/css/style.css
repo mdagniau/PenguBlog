@@ -46,6 +46,18 @@
   padding-left: 4em !important;
 }
 
+.headerFooter
+{
+  text-align: center !important;
+  color : white;
+  text-shadow: rgba(33,150,243,0.9) 1px 1px, rgba(33,150,243,0.9) -1px 1px, rgba(33,150,243,0.9) -1px -1px, rgba(33,150,243,0.9) 1px -1px;  
+  background-color: rgba(198,243,248,0.6);
+}
+
+.footer{
+  margin-top: 1em !important;
+}
+
 
 
 
@@ -56,7 +68,7 @@
 .wrapperOutside {
    display: table;
    width: 100vw;
-   height: 100vh;
+   height : auto;
 }
 
 .wrapperInside {
@@ -91,10 +103,10 @@ dialog window, and content.
   padding-right: 0;
   padding-bottom: 0;
   /* External padding */
-  margin-top: 0;
+  margin-top: 0em;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 0; 
+  margin-bottom: 0em; 
 }
 
 .dialogContent { 
@@ -238,31 +250,40 @@ material design language.
 }
 
 .formInputs{
-  width: 50%;
-  margin-left: 25%;
+  margin-right: 0.5em !important;
+  margin-left: 5% !important;
+  padding-right: 0em !important;
+  display: inline-block !important;
+}
+
+.formLabels{
+  display: inline-block !important;
+  min-width: 8em !important;
+  padding: 0em;
+  margin-right: 5% !important;
 }
 
 
 
+/*********************************************
+ * MY ACCOUNT
+ *********************************************/
+.iconMyAccount{
+  margin : 0em!important;
+  padding : 0em!important;
+  float:right;
+}
 
 
 /*********************************************
  * ARTICLES
  *********************************************/
-h1
-{
-  text-align: center !important;
-  color : white;
-  text-shadow: rgba(33,150,243,0.9) 1px 1px, rgba(33,150,243,0.9) -1px 1px, rgba(33,150,243,0.9) -1px -1px, rgba(33,150,243,0.9) 1px -1px;  
-  background-color: rgba(198,243,248,0.6);
-}
 
 .iconTitle{
   vertical-align: top;
   float:left;
-  margin-top: 0em !important;
-  margin-left: 0.1em !important;
-  padding-top: 0em !important;
+  margin: 0em !important;
+  padding: 0em !important;
 }
 
 .imgArticle
@@ -274,20 +295,33 @@ h1
 
 .widthArticle{
   min-width: 50em !important;
+  margin-bottom: 0em !important;
+  padding-bottom: 0.1em !important;
 }
 
 .wrapperInsideArticle{
-  margin-bottom: 0em !important;
-  padding-bottom: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  padding-bottom: 0em !important;
 }
 
 .article{
   border : 0.1em solid rgba(33,150,243,0.9);
   min-height: 22em !important;
   height: auto;
+  margin-bottom: 0em !important;
+  padding-bottom: 0em !important;
 }
 
-
+.inputNewArticle{
+  min-width: 30em !important;
+  min-height: 16em !important;
+  vertical-align: top !important;
+  padding-left:0em !important;
+  padding-top:0em !important;
+  padding-bottom:0.4em !important;
+  padding-right: 0.4em !important;
+  margin : 0em !important;
+}
 
 
 
@@ -301,6 +335,7 @@ h1
   height: 2em !important;
   padding-top: 0em !important;
   margin-top: 0em !important;
+  vertical-align: top;
 }
 
 .inputComment{
@@ -311,3 +346,13 @@ h1
   height: 2em !important;
 }
 
+
+/*********************************************
+ * ERROR
+ *********************************************/
+ .msgError{
+   display : inline-block;
+   text-align: center;
+   color : red;
+   font-size: 1em;
+ }

@@ -1,0 +1,18 @@
+  <div ng-show="false" ng-controller="helloCtrl">
+      <label>Nom :</label> <input type="text" ng-model="name"> <br />
+      <h2>Hello {{ name }}!</h2>
+      <button
+        class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+        <i class="material-icons">add</i>
+      </button>
+    </div>
+
+    <div ng-show="false" ng-controller="peopleCtrl">
+      <label>Afficher les personnes ?</label> <input type="checkbox"
+        ng-model="showPeople">
+      <ul ng-show="showPeople">
+        <li ng-repeat="person in people">{{ person.firstname }} {{
+          person.lastname }}</li>
+      </ul>
+      <p ng-hide="showPeople">Il n'y a personne de visible.</p>
+    </div>
