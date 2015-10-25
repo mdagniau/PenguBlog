@@ -35,35 +35,32 @@ client.connect(function(err) {
 
   	
 //Creation table users
-/*	client.query('CREATE TABLE IF NOT EXISTS users(id integer PRIMARY KEY, pseudo VARCHAR(255) not null, lastname VARCHAR(255) not null, firstname VARCHAR(255) not null, email VARCHAR(255) not null, password VARCHAR(255) not null)', function(err, result) {
+  client.query('CREATE TABLE IF NOT EXISTS users(id integer PRIMARY KEY, pseudo VARCHAR(255) not null, lastname VARCHAR(255) not null, firstname VARCHAR(255) not null, email VARCHAR(255) not null, password VARCHAR(255) not null)', function(err, result) {
+    	if(err) {
+			return console.error('error running query', err);
+    	}
+	});
+
+    //Creation table articles
+ /* client.query('CREATE TABLE IF NOT EXISTS articles(id integer PRIMARY KEY, title VARCHAR(255) not null, body TEXT not null, author integer not null, date_creation date not null, date_update date CONSTRAINT author FOREIGN KEY (author) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
 	});*/
-
-    //Creation table articles
-   /* client.query('CREATE TABLE IF NOT EXISTS articles(id integer PRIMARY KEY, title VARCHAR(255) not null, body TEXT not null, author VARCHAR(255) not null, date_creation date not null, date_update date)', function(err, result) {
-    	if(err) {
-			return console.error('error running query', err);
-    	}
-	});
-	client.end();*/
     
     //Creation table comments
-    /*client.query('CREATE TABLE IF NOT EXISTS comments(id integer PRIMARY KEY, id_article integer not null, title VARCHAR(255) not null, body TEXT not null, author VARCHAR(255) not null, date_creation date not null, date_update date CONSTRAINT fk_article_comment FOREIGN KEY (id_article) REFERENCES articles(id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE))', function(err, result) {
+  client.query('CREATE TABLE IF NOT EXISTS comments(id integer NOT NULL, id_article integer NOT NULL, body text NOT NULL, id_user integer NOT NULL, date_creation date NOT NULL, CONSTRAINT id PRIMARY KEY (id), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT id_user FOREIGN KEY (id_user) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
 	});
-	client.end();*/
 
     //Creation table favoritesArticles
-   /* client.query('CREATE TABLE IF NOT EXISTS favoritesArticles(id_user integer not null, id_article integer not null, PRIMARY KEY (id_user, id_article), KEY primary_key (id_favoritesArticles), CONSTRAINT fk_user_favoritesArticles FOREIGN KEY (id_user) REFERENCES users(id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE), CONSTRAINT fk_article_favoritesArticles FOREIGN KEY (id_article) REFERENCES articles(id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE)', function(err, result) {
+   client.query('CREATE TABLE IF NOT EXISTS favoritesArticles( id_user integer NOT NULL, id_article integer NOT NULL, CONSTRAINT "id_favoritesArticles" PRIMARY KEY (id_user, id_article), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT id_user FOREIGN KEY (id_user) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
 	});
-	client.end();*/
 
     console.log('All tables are created');
 
@@ -75,13 +72,49 @@ client.connect(function(err) {
      *********************************************************/
 
     app.post('/login', bodyParser.json(), function(req, res) {
-      console.log(req.body);
-      res.send('OK');
+      var query = 'SELECT * FROM users WHERE users.pseudo = \'' + req.body.pseudo +'\' AND users.password = \''+ req.body.password +'\' ';
+      client.query(query, function(err, result) {
+        if(err) {
+          console.error('error running query', err);
+        }
+        res.statusCode = 200;
+        res.send(result);
+      });
     });
 
     app.post('/addUser', bodyParser.json(), function(req, res) {
-      console.log(req.body);
-      res.send('OK');
+      client.query('SELECT id FROM users', function(err, result) {
+        var query = 'INSERT INTO users(id, pseudo, lastname, firstname, email, password) VALUES('+result.rowCount+',\''+req.body.pseudo+'\',\''+req.body.lastName+'\',\''+req.body.firstName+'\',\''+req.body.email+'\',\''+req.body.password+'\')';
+        client.query(query, function(err, result) {
+          if(err) {
+            console.error('error running query', err);
+          }
+          res.send('OK'); 
+        });
+      });      
+    });
+
+    app.post('/addArticle', bodyParser.json(), function(req, res) {
+      client.query('SELECT id FROM articles', function(err, result) {
+        var query = 'INSERT INTO users(id, pseudo, lastname, firstname, email, password) VALUES('+result.rowCount+',\''+req.body.pseudo+'\',\''+req.body.lastName+'\',\''+req.body.firstName+'\',\''+req.body.email+'\',\''+req.body.password+'\')';
+        client.query(query, function(err, result) {
+          if(err) {
+            console.error('error running query', err);
+          }
+          res.send('OK'); 
+        });
+      });      
+    });
+
+    app.get('/getArticles', bodyParser.json(), function(req, res) {
+      var query = 'SELECT * FROM articles';
+      client.query(query, function(err, result) {
+        if(err) {
+          console.error('error running query', err);
+        }
+        res.statusCode = 200;
+        res.send(result);
+      });
     });
 
 
@@ -92,6 +125,6 @@ client.connect(function(err) {
     client.end();
   });*/
 
-  client.end();
+  //client.end();
     //output: Tue Jan 15 2013 19:12:47 GMT-600 (CST)
 });

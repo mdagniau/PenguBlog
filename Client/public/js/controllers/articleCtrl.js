@@ -10,4 +10,25 @@ blog.controller('articleCtrl', ['$scope', function ($scope) {
         element.src = "public/img/icon/heart-outline.png" ;
       }
     }
+
+    $scope.sendArticle = function(){
+      var newArticle = { title: $scope.newArticle.title,
+                          body: $scope.newArticle.body
+      } 
+      $http.post('http://localhost:8090/addArticle', newArticle).then(function(resp){
+          
+      });
+
+      $scope.newArticle.title = "";
+      $scope.newArticle.body = ""; 
+      $scope.newArticle = false;
+      $scope.showArticle = true;
+    }
+
+    $scope.cancelNewArticle = function(){
+      $scope.newArticle.title = "";
+      $scope.newArticle.body = ""; 
+      $scope.newArticle = false;
+      $scope.showArticle = true;
+    }
 }]);

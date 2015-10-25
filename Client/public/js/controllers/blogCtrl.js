@@ -4,7 +4,21 @@ blog.controller('blogCtrl', function ($scope, $http) {
     $scope.invite = true;
     $scope.editVar = true;
 
-    $scope.numberArticles = 5;
+    $http({
+      method : 'get',
+      url :'http://localhost:8090/getArticles'
+    }).then(function(resp){
+        $scope.numberArticles = resp.data.rowCount;
+        for (var i = resp.data.rowCount - 1; i >= 0; i--) {
+          var getTitle = "titleArticle"+i;
+          var newTitle = resp.data.rows[i].title;
+          var newBody = resp.data.rows[i].body; 
+          document.getElementById(getTitle).innerHTML = newTitle;
+          debugger;
+          document.getElementById("bodyArticle"+i).innerHTML = newBody;
+        };
+    });
+
     $scope.getNumber = function(num) {
       return new Array(num);   
     }
@@ -13,7 +27,6 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showLogin = true;
       $scope.showSignup = false;
       $scope.showArticle = false;
-      $scope.commentOn = false;
       $scope.showAccount = false;
       $scope.newArticle = false;
       $scope.settings = false;
@@ -22,7 +35,6 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showLogin = false;
       $scope.showSignup = true;
       $scope.showArticle = false;
-      $scope.commentOn = false;
       $scope.showAccount = false;
       $scope.newArticle = false;
       $scope.settings = false;
@@ -31,13 +43,13 @@ blog.controller('blogCtrl', function ($scope, $http) {
     $scope.signout = function(){
       $scope.userConnected = false;
       $scope.invite = true;
+      document.getElementById("userPseudo").innerHTML = "Pengu name";
     }
 
     $scope.myAccount = function (){
       $scope.showLogin = false;
       $scope.showSignup = false;
       $scope.showArticle = false;
-      $scope.commentOn = false;
       $scope.showAccount = true;
       $scope.newArticle = false;
       $scope.settings = false;
@@ -49,7 +61,6 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showLogin = false;
       $scope.showSignup = false;
       $scope.showArticle = false;
-      $scope.commentOn = false;
       $scope.showAccount = false;
       $scope.newArticle = true;
       $scope.settings = false;
@@ -58,7 +69,6 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showLogin = false;
       $scope.showSignup = false;
       $scope.showArticle = false;
-      $scope.commentOn = false;
       $scope.showAccount = false;
       $scope.newArticle = false;
       $scope.settings = true;
@@ -67,10 +77,10 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showLogin = false;
       $scope.showSignup = false;
       $scope.showArticle = true;
-      $scope.commentOn = true;
       $scope.showAccount = false;
       $scope.newArticle = false;
       $scope.settings = false;
+      document.getElementById("addComment"+index).style.display = 'block';
     }
 
 
@@ -99,8 +109,11 @@ blog.controller('blogCtrl', function ($scope, $http) {
                      password: $scope.user.password
       } 
       $http.post('http://localhost:8090/login', user).then(function(resp){
+        if(resp != null){
+          document.getElementById("userPseudo").innerHTML = resp.data.rows[0].pseudo;
           $scope.userConnected = true;
           $scope.invite = false;
+        }
       });
 
       $scope.user.pseudo = "";
@@ -116,21 +129,24 @@ blog.controller('blogCtrl', function ($scope, $http) {
     }
 
     $scope.submitSignupForm = function(){
-      var newUser = {  pseudo: $scope.newUser.pseudo,
-                       firstName: $scope.newUser.firstname, 
-                       lastName: $scope.newUser.lastname,
-                       email: $scope.newUser.email,
-                       password: $scope.newUser.password
-      } 
-      $http.post('http://localhost:8090/addUser', newUser).then(function(resp){
-          
-      });
+      if ($scope.signupForm.$valid) {
+
+        var newUser = {  pseudo: $scope.newUser.pseudo,
+                         firstName: $scope.newUser.firstname, 
+                         lastName: $scope.newUser.lastname,
+                         email: $scope.newUser.email,
+                         password: $scope.newUser.password
+        } 
+        $http.post('http://localhost:8090/addUser', newUser).then(function(resp){   
+        });
+      }
 
       $scope.newUser.pseudo = "";
       $scope.newUser.firstname = ""; 
       $scope.newUser.lastname = "";
       $scope.newUser.email = "";
       $scope.newUser.password = "";
+      $scope.newUser.confirmPassword = "";
       $scope.showSignup = false;
       $scope.showArticle = true;
     }
@@ -147,14 +163,51 @@ blog.controller('blogCtrl', function ($scope, $http) {
     $scope.sendComment = function(){
        $scope.commentOn = false;
     }
-    $scope.cancelComment = function (){
+    $scope.cancelComment = function (index){
       $scope.commentOn = false;
       $scope.showArticle = true;
+      document.getElementById("addComment"+index).style.display = 'none';
     }
     $scope.cancelMyAccount = function (){
       $scope.showAccount = false;
       $scope.editVar = true;
       $scope.showArticle = true;
     }
+
+    /*Articles*/
+    $scope.addFavorite = function(index){
+      var nameElement = "favoriteIcon"+index;
+      var element = document.getElementById(nameElement);
+      var source = element.getAttribute("src");
+      if(source == "public/img/icon/heart-outline.png"){        
+       element.src = "public/img/icon/heart.png" ;
+      }
+      else{
+        element.src = "public/img/icon/heart-outline.png" ;
+      }
+    }
+
+    $scope.sendArticle = function(){
+      var newArticle = { title: $scope.newArticle.title,
+                          body: $scope.newArticle.body
+      } 
+      $http.post('http://localhost:8090/addArticle', newArticle).then(function(resp){
+          
+      });
+
+      $scope.newArticle.title = "";
+      $scope.newArticle.body = ""; 
+      $scope.newArticle = false;
+      $scope.showArticle = true;
+    }
+
+    $scope.cancelNewArticle = function(){
+      $scope.newArticle.title = "";
+      $scope.newArticle.body = ""; 
+      $scope.newArticle = false;
+      $scope.showArticle = true;
+    }
+
+    /*Comments*/
 
 })
