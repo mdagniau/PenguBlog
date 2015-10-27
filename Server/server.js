@@ -35,7 +35,7 @@ client.connect(function(err) {
 
   	
 //Creation table users
-  client.query('CREATE TABLE IF NOT EXISTS users(id integer PRIMARY KEY, pseudo VARCHAR(255) not null, lastname VARCHAR(255) not null, firstname VARCHAR(255) not null, email VARCHAR(255) not null, password VARCHAR(255) not null)', function(err, result) {
+  client.query('CREATE TABLE IF NOT EXISTS users(id integer PRIMARY KEY, pseudo VARCHAR(255) not null, lastname VARCHAR(255) not null, firstname VARCHAR(255) not null, email VARCHAR(255) not null, password VARCHAR(255) not null, CONSTRAINT uniq_pseudo UNIQUE (pseudo))', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
@@ -68,7 +68,7 @@ client.connect(function(err) {
 
 
     /*********************************************************
-     * GET REQUESTS
+     * GET REQUESTS USER
      *********************************************************/
 
     app.post('/login', bodyParser.json(), function(req, res) {
@@ -94,9 +94,23 @@ client.connect(function(err) {
       });      
     });
 
+    app.post('/updateUser', bodyParser.json(), function(req, res) {
+        var query = 'UPDATE users SET lastname = \''+req.body.lastName+'\', firstname = \''+req.body.firstName+'\', email = \''+req.body.email+'\', password = \''+req.body.password+'\' WHERE pseudo = \'' +req.body.pseudo+'\'' ;
+        client.query(query, function(err, result) {
+          if(err) {
+            console.error('error running query', err);
+          }
+          res.send('OK'); 
+        });    
+    });
+
+     /*********************************************************
+     * GET REQUESTS ARTICLES
+     *********************************************************/
+
     app.post('/addArticle', bodyParser.json(), function(req, res) {
       client.query('SELECT id FROM articles', function(err, result) {
-        var query = 'INSERT INTO users(id, pseudo, lastname, firstname, email, password) VALUES('+result.rowCount+',\''+req.body.pseudo+'\',\''+req.body.lastName+'\',\''+req.body.firstName+'\',\''+req.body.email+'\',\''+req.body.password+'\')';
+        var query = 'INSERT INTO articles(id, pseudo, lastname, firstname, email, password) VALUES('+result.rowCount+',\''+req.body.pseudo+'\',\''+req.body.lastName+'\',\''+req.body.firstName+'\',\''+req.body.email+'\',\''+req.body.password+'\')';
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
@@ -117,14 +131,61 @@ client.connect(function(err) {
       });
     });
 
+    app.post('/getArticlesByUser', bodyParser.json(), function(req, res) {
+      client.query('SELECT id FROM users WHERE pseudo = \''+req.body.pseudo + '\'', function(err, result) {
+        var query = 'SELECT * FROM articles WHERE author = \''+result.rows[0].id +'\'';
+        client.query(query, function(err, result) {
+          if(err) {
+            console.error('error running query', err);
+          }
+          res.statusCode = 200;
+          res.send(result);
+        });
+      });
+    });
 
+     /*********************************************************
+     * GET REQUESTS COMMENTS
+     *********************************************************/
 
-  /*var userConnected = client.query('SELECT * FROM users LIMIT 1');
-  userConnected.on("end", function (result) {
-    console.log(JSON.stringify(result, null, "    "));
-    client.end();
-  });*/
+    app.post('/addComment', bodyParser.json(), function(req, res) {
+      var queryAuthor = 'SELECT id FROM users WHERE pseudo = \''+req.body.author + '\'';
+      var idAuthor;
+      client.query(queryAuthor, function(err, result) {
+        if(err)
+        {
+          console.error('error running query', err); 
+        }
+        idAuthor = result.rows[0].id;
+      });
+      console.log("idAuthor "+idAuthor);
+      client.query('SELECT id FROM comments', function(err, result) {
+        var row = 0;
+        if(typeof result !== 'undefined'){
+          row = result.rowCount;
+          console.error('on est dans le if');
+        }
+        var date = new Date;
+        
+        var query = 'INSERT INTO comments(id, id_article, body, id_user, date_creation) VALUES('+row+',\''+req.body.article+'\',\''+req.body.bodyComment+'\',\''+idAuthor+'\','+ date +')';
+        client.query(query, function(err, result) {
+          if(err) {
+            console.error('error running query', err);
+          }
+          res.send('OK'); 
+        });
+      }); 
+    });  
 
-  //client.end();
-    //output: Tue Jan 15 2013 19:12:47 GMT-600 (CST)
+    app.post('/getCommentsByArticle', bodyParser.json(), function(req, res) {
+      var query = 'SELECT * FROM comments WHERE id_article = \''+req.body.article+'\'';
+      client.query(query, function(err, result) {
+        if(err) {
+          console.error('error running query', err);
+        }
+        res.statusCode = 200;
+        res.send(result);
+      });
+    });  
+
 });

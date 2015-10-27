@@ -3,19 +3,20 @@ blog.controller('blogCtrl', function ($scope, $http) {
     $scope.userConnected = false;
     $scope.invite = true;
     $scope.editVar = true;
+    var articlesByUser;
 
     $http({
       method : 'get',
       url :'http://localhost:8090/getArticles'
     }).then(function(resp){
         $scope.numberArticles = resp.data.rowCount;
-        for (var i = resp.data.rowCount - 1; i >= 0; i--) {
-          var getTitle = "titleArticle"+i;
+        for (var i = 0; i < resp.data.rowCount; i++) {
+          var getTitle = document.getElementById("titleArticle"+i);
+          var getBody = document.getElementById("bodyArticle"+i);
           var newTitle = resp.data.rows[i].title;
           var newBody = resp.data.rows[i].body; 
-          document.getElementById(getTitle).innerHTML = newTitle;
-          debugger;
-          document.getElementById("bodyArticle"+i).innerHTML = newBody;
+          getTitle.innerText = newTitle;
+          getBody.innerText = newBody;
         };
     });
 
@@ -43,6 +44,11 @@ blog.controller('blogCtrl', function ($scope, $http) {
     $scope.signout = function(){
       $scope.userConnected = false;
       $scope.invite = true;
+      $scope.user.pseudo = "";
+      $scope.user.lastname = "";
+      $scope.user.firstname = "";
+      $scope.user.email = "";
+      $scope.user.password = "";
       document.getElementById("userPseudo").innerHTML = "Pengu name";
     }
 
@@ -56,8 +62,8 @@ blog.controller('blogCtrl', function ($scope, $http) {
     }
     $scope.editAccount = function(){
       $scope.editVar = false;
-    }
-    $scope.addAnArticle = function (){
+    }   
+    $scope.addAnArticle = function(){
       $scope.showLogin = false;
       $scope.showSignup = false;
       $scope.showArticle = false;
@@ -73,6 +79,15 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.newArticle = false;
       $scope.settings = true;
     }
+    $scope.openCommentByArticle = function(index){
+      $scope.showLogin = false;
+      $scope.showSignup = false;
+      $scope.showArticle = true;
+      $scope.showAccount = false;
+      $scope.newArticle = false;
+      $scope.settings = false;
+      document.getElementById("comment"+index).style.display = 'table';
+    }
     $scope.openCommentForm = function(index){
       $scope.showLogin = false;
       $scope.showSignup = false;
@@ -80,28 +95,13 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showAccount = false;
       $scope.newArticle = false;
       $scope.settings = false;
-      document.getElementById("addComment"+index).style.display = 'block';
-    }
-
-
-
-    /*******************************************
-    * GENERIC METHODS
-    ********************************************/
-
-    $scope.submitDialog = function(varShow, object){
-        object = angular.copy(object);
-        $scope.varShow = false;
-    }
-
-    $scope.cancelDialog = function(varShow){
-        $scope.varShow = false;
-        $scope.showArticle = true;
+      document.getElementById("addComment"+index).style.display = 'table';
+      document.getElementById("addComment"+index).style.marginBottom = '10em';
     }
 
 
     /*******************************************
-    * METHODS NO GENERIC
+    * METHODS LOGIN/LOGOUT/SIGNUP
     ********************************************/
 
     $scope.submitLoginForm = function(){
@@ -111,6 +111,12 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $http.post('http://localhost:8090/login', user).then(function(resp){
         if(resp != null){
           document.getElementById("userPseudo").innerHTML = resp.data.rows[0].pseudo;
+          $scope.user.pseudo = resp.data.rows[0].pseudo;
+          $scope.user.lastname = resp.data.rows[0].lastname;
+          $scope.user.firstname = resp.data.rows[0].firstname;
+          $scope.user.email = resp.data.rows[0].email;
+          $scope.user.password = resp.data.rows[0].password;
+          getArticlesByUser();
           $scope.userConnected = true;
           $scope.invite = false;
         }
@@ -121,6 +127,7 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showLogin = false;
       $scope.showArticle = true;
     }
+
     $scope.cancelLogin = function (){
       $scope.user.pseudo = "";
       $scope.user.password = ""; 
@@ -140,7 +147,6 @@ blog.controller('blogCtrl', function ($scope, $http) {
         $http.post('http://localhost:8090/addUser', newUser).then(function(resp){   
         });
       }
-
       $scope.newUser.pseudo = "";
       $scope.newUser.firstname = ""; 
       $scope.newUser.lastname = "";
@@ -160,21 +166,32 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showArticle = true;
     }
 
-    $scope.sendComment = function(){
-       $scope.commentOn = false;
-    }
-    $scope.cancelComment = function (index){
-      $scope.commentOn = false;
-      $scope.showArticle = true;
-      document.getElementById("addComment"+index).style.display = 'none';
-    }
-    $scope.cancelMyAccount = function (){
-      $scope.showAccount = false;
-      $scope.editVar = true;
-      $scope.showArticle = true;
+
+    /*******************************************
+    * METHODS ARTICLES
+    ********************************************/
+
+    getArticlesByUser = function(){
+      var author = {pseudo: $scope.user.pseudo};
+      $http.post('http://localhost:8090/getArticlesByUser', author).then(function(resp){   
+        $scope.numberArticlesByUser = resp.data.rowCount;
+        for(var i=0; i<resp.data.rowCount; i++)
+        {
+          document.getElementById("publication"+i).innerHTML = resp.data.rows[i].title;
+        }
+        return resp.data;
+      });
     }
 
-    /*Articles*/
+    /*$scope.updateArticle = function(index){
+      $scope.showLogin = false;
+      $scope.showSignup = false;
+      $scope.showArticle = false;
+      $scope.showAccount = false;
+      $scope.newArticle = true;
+      $scope.settings = false;     
+    }*/
+
     $scope.addFavorite = function(index){
       var nameElement = "favoriteIcon"+index;
       var element = document.getElementById(nameElement);
@@ -188,7 +205,7 @@ blog.controller('blogCtrl', function ($scope, $http) {
     }
 
     $scope.sendArticle = function(){
-      var newArticle = { title: $scope.newArticle.title,
+      var newArticle = {  title: $scope.newArticle.title,
                           body: $scope.newArticle.body
       } 
       $http.post('http://localhost:8090/addArticle', newArticle).then(function(resp){
@@ -208,6 +225,53 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showArticle = true;
     }
 
-    /*Comments*/
 
+    /*******************************************
+    * METHODS COMMENTS
+    ********************************************/
+
+    $scope.getCommentsByArticle = function(index){
+      var article = { article : index }
+       $http.post('http://localhost:8090/getCommentsByArticle', article).then(function(resp){   
+        });
+    }
+
+    $scope.submitCommentForm = function(index){
+       var newComment = { bodyComment : $scope.bodyComment,
+                          author : $scope.user.pseudo,
+                          article : index
+       }
+       $http.post('http://localhost:8090/addComment', newComment).then(function(resp){   
+        });
+       document.getElementById("addComment"+index).style.display = 'none';
+       $scope.showArticle = true;
+    }
+    $scope.cancelComment = function (index){
+      $scope.showArticle = true;
+      document.getElementById("addComment"+index).style.display = 'none';
+    }
+    $scope.cancelMyAccount = function (){
+      $scope.showAccount = false;
+      $scope.editVar = true;
+      $scope.showArticle = true;
+    }
+
+
+    /*******************************************
+    * METHODS ACCOUNT
+    ********************************************/
+
+    $scope.submitMyAccountChanges = function(){
+       var userChanged = {  pseudo: $scope.user.pseudo,
+                            firstName: $scope.user.firstname, 
+                            lastName: $scope.user.lastname,
+                            email: $scope.user.email,
+                            password: $scope.user.password
+        } 
+        $http.post('http://localhost:8090/updateUser', userChanged).then(function(resp){   
+        });
+      $scope.editVar = true;        
+      $scope.showAccount = false;
+      $scope.showArticle = true;
+    }
 })

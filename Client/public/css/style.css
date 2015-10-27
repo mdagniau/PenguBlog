@@ -341,11 +341,14 @@ material design language.
 .inputComment{
   padding-top: 0em !important;
   margin-top: 0em !important;
-  padding-left: 7.5em;
+  padding-left: 7.5em !important;
   width: 40em !important;
   height: 2em !important;
 }
 
+.displayComment{
+  display: none;
+}
 
 /*********************************************
  * ERROR

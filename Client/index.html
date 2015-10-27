@@ -160,7 +160,7 @@
           src="public/img/icon/edit.png" class="iconMyAccount"></img></a></div>
               <div class="dialogContentBody">
                 <span class="formLabels">Pseudo </span><input class="formInputs" type="text" placeholder="Pseudo"
-                  ng-model="user.pseudo" ng-disabled="editVar"></input><br />
+                  ng-model="user.pseudo" ng-disabled="true"></input><br />
                 <span class="formLabels">Lastname </span><input class="formInputs" type="text" placeholder="Lastname"
                   ng-model="user.lastname" ng-disabled="editVar"></input><br /><span class="formLabels">Firstname </span><input
                   class="formInputs" type="text" placeholder="Firstname"
@@ -168,10 +168,7 @@
                 <span class="formLabels">Email </span><input class="formInputs" type="email" placeholder="Email"
                   ng-model="user.email" ng-disabled="editVar"></input><br />
                 <span class="formLabels">Password </span><input class="formInputs" type="password" placeholder="Password"
-                  ng-model="user.password" ng-disabled="editVar"></input><br /> <input
-                  class="formInputs" type="password"
-                  placeholder="Confirm password"
-                  ng-model="newUser.confirmPassword" ng-show="false"></input>
+                  ng-model="user.password" ng-disabled="editVar"></input><br />
               </div>
             </div>
             <!-- Dialog action bar -->
@@ -183,8 +180,8 @@
               </a>
               <!-- This comment removes 4px gap between buttons-->
               <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
-                ng-click="submitSignup">
-                <div class="buttonFlat buttonCustom" id="submitSignupForm">SUBMIT</div>
+                ng-click="submitMyAccountChanges()">
+                <div class="buttonFlat buttonCustom" id="submitMyAccount">SUBMIT</div>
               </a>
             </div>
           </div>
@@ -236,19 +233,11 @@
               <div class="dialogContentTitle"><img
           src="public/img/icon/settings.png" class="icon"> Manage publications</div>
               <div class="dialogContentBody">
-                <span class="formLabels">Pseudo </span><input class="formInputs" type="text" placeholder="Pseudo"
-                  ng-model="user.pseudo" ng-disabled="editVar"></input><br />
-                <span class="formLabels">Lastname </span><input class="formInputs" type="text" placeholder="Lastname"
-                  ng-model="user.lastname" ng-disabled="editVar"></input><br /><span class="formLabels">Firstname </span><input
-                  class="formInputs" type="text" placeholder="Firstname"
-                  ng-model="user.firstname" ng-disabled="editVar"></input> <br />
-                <span class="formLabels">Email </span><input class="formInputs" type="email" placeholder="Email"
-                  ng-model="user.email" ng-disabled="editVar"></input><br />
-                <span class="formLabels">Password </span><input class="formInputs" type="password" placeholder="Password"
-                  ng-model="user.password" ng-disabled="editVar"></input><br /> <input
-                  class="formInputs" type="password"
-                  placeholder="Confirm password"
-                  ng-model="newUser.confirmPassword" ng-show="false"></input>
+                <ul>Your publications :
+                  <div id="publications" ng-repeat="i in getNumber(numberArticlesByUser) track by $index">
+                    <li id="publication{{$index}}"><a href="" ng-click="updateArticle($index)">Title</a></li>
+                  </div>
+                </ul>
               </div>
             </div>
             <!-- Dialog action bar -->
@@ -289,8 +278,14 @@
           <!-- Dialog action bar -->
           <div class="dialogActionBar">
             <!-- Buttons -->
-            <div class="buttonFlat" id="infosArticle" fit>AUTHOR - DATE
-              - ...</div>
+            <div class="buttonFlat" id="authorComment" fit>Author</div>
+          <div class="buttonFlat" fit>-</div>
+          <div class="buttonFlat" id="dateComment" fit>Date</div>
+             <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
+              ng-click="openCommentsByArticle($index)">
+              <div class="buttonFlat buttonCustom" id="showCommentButton"><img
+          src="public/img/icon/comment-text-outline(1).png" class="icon">SHOW COMMENTS</div>
+              </a>
             <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
               ng-click="openCommentForm($index)">
               <div class="buttonFlat buttonCustom" id="addCommentButton"><img
@@ -302,9 +297,30 @@
       </div>
       </div>
 
+      <!-- DISPLAY COMMENT-->
+      <div id="comment{{$index}}" class="wrapperOutside displayComment" ng-repeat="i in getNumber(numberComments) track by $index">
+      <div class="wrapperInside">
+      <!-- Dialog -->
+        <div class="dialogContainer widthComment">
+        <!-- Dialog title and body -->
+          <div class="dialogContent">
+            <div class="dialogContentBody">
+              <label class="inputComment" id="bodyComment">body comment</label>
+            </div>
+        </div>
+        <!-- Dialog action bar -->
+        <div class="dialogActionBar">
+          <div class="buttonFlat" id="authorComment" fit>Author</div>
+          <div class="buttonFlat" fit>-</div>
+          <div class="buttonFlat" id="dateComment" fit>Date</div>
+        </div>
+      </div>
+      </div>
+    </div>
+
 
       <!-- ADD A COMMENT DIALOG -->
-      <div id="addComment{{$index}}" class="wrapperOutside">
+      <div id="addComment{{$index}}" class="wrapperOutside displayComment">
       <div class="wrapperInside">
       <!-- Dialog -->
         <div class="dialogContainer widthComment">
@@ -324,7 +340,7 @@
             <div class="buttonFlat" id="cancelComment" fit>CANCEL</div>
           </a> 
           <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
-            ng-click="submitCommentForm(bodycomment)">
+            ng-click="submitCommentForm($index)">
             <div class="buttonFlat buttonCustom" id="sendComment">SEND
               <img src="public/img/icon/telegram.png" class="icon">
             </div>
