@@ -47,12 +47,12 @@
           src="public/img/icon/account-star-variant.png" class="icon"></img>My
           account</a> <a class="mdl-navigation__link" href="" ng-click="addAnArticle()"><img
           src="public/img/icon/comment-text-outline.png" class="icon">Add
-          an article</a>  <a class="mdl-navigation__link" href="" ng-click="managePublications()"><img
-          src="public/img/icon/settings.png" class="icon">Manage my publications</a><a class="mdl-navigation__link" href=""><img
+          an article</a>  
+          <!--a class="mdl-navigation__link" href=""><img
           src="public/img/icon/calendar.png" class="icon">Year {{year}}</a>
         <a class="mdl-navigation__link list" href=""><img
           src="public/img/icon/chevron-right.png" class="icon">Month
-          {{month}}</a>
+          {{month}}</a-->
       </nav>
     </div>
 
@@ -147,7 +147,7 @@
 
 
 
-    <!-- MY ACCOUNT DIALOG -->
+    <!-- MY ACCOUNT DIALOG class="iconMyAccount"-->
     <div id="myAccountDialog" ng-show="showAccount" class="wrapperOutside">
       <div class="wrapperInside">
         <!-- Dialog -->
@@ -156,8 +156,7 @@
             <!-- Dialog title and body -->
             <div class="dialogContent">
               <div class="dialogContentTitle"><img
-          src="public/img/icon/account-star-variant.png" class="icon"></img> My account<a href="" ng-click="editAccount()"><img
-          src="public/img/icon/edit.png" class="iconMyAccount"></img></a></div>
+          src="public/img/icon/account-star-variant.png" class="icon"></img> My account</div>
               <div class="dialogContentBody">
                 <span class="formLabels">Pseudo </span><input class="formInputs" type="text" placeholder="Pseudo"
                   ng-model="user.pseudo" ng-disabled="true"></input><br />
@@ -168,7 +167,10 @@
                 <span class="formLabels">Email </span><input class="formInputs" type="email" placeholder="Email"
                   ng-model="user.email" ng-disabled="editVar"></input><br />
                 <span class="formLabels">Password </span><input class="formInputs" type="password" placeholder="Password"
-                  ng-model="user.password" ng-disabled="editVar"></input><br />
+                  ng-model="user.password" ng-disabled="editVar"></input><br /><br/>
+                  <a href="" ng-click="editAccount()"><img
+          src="public/img/icon/edit.png"></img> EDIT MY ACCOUNT</a><a href="" ng-click="deleteAccount()"><img
+          src="public/img/icon/delete.png"></img> DELETE MY ACCOUNT</a>
               </div>
             </div>
             <!-- Dialog action bar -->
@@ -191,15 +193,16 @@
 
 
     <!-- ADD AN ARTICLE DIALOG -->
-    <div id="addAnArticleForm" ng-show="newArticle" class="wrapperOutside wrapperInsideArticle" ng-controller="articleCtrl">
+    <div id="addAnArticleForm" ng-show="newArticle" class="wrapperOutside wrapperInsideArticle">
       <div class="wrapperInside wrapperInsideArticle">
         <!-- Dialog -->
+      <form novalidate class="simple-form">
         <div class="dialogContainer widthArticle">
           <!-- Dialog title and body -->
           <div class="dialogContent article">
-            <span class="formLabels dialogContentBody">Title... </span><input type="text" ng-model="newArticle.title" class="dialogContentTitle" id="titleNewArticle" required></input>
+            <span class="formLabels dialogContentBody">Title... </span><input type="text" ng-model="newArticleByUser.title" placeholder="Title..." class="dialogContentTitle" required></input>
             <div class="dialogContentBody">
-              <span class="formLabels">Write your article... </span><br/><textarea ng-model="newArticle.body" type="text" id="bodyNewArticle" class="inputNewArticle" required></textarea>
+              <span class="formLabels">Write your article... </span><br/><textarea ng-model="newArticleByUser.body" placeholder="Write your article..." type="text" class="inputNewArticle" required></textarea>
               <img src="public/img/peng.jpg" class="imgArticle"></img>
             </div>
           </div>
@@ -218,49 +221,13 @@
               </a>
           </div>
         </div>
-      </div>
-    </div>
-
-
-    <!-- MANAGE PUBLICATIONS DIALOG -->
-    <div id="managePublicationsDialog" ng-show="settings" class="wrapperOutside">
-      <div class="wrapperInside">
-        <!-- Dialog -->
-        <form novalidate class="simple-form">
-          <div class="dialogContainer">
-            <!-- Dialog title and body -->
-            <div class="dialogContent">
-              <div class="dialogContentTitle"><img
-          src="public/img/icon/settings.png" class="icon"> Manage publications</div>
-              <div class="dialogContentBody">
-                <ul>Your publications :
-                  <div id="publications" ng-repeat="i in getNumber(numberArticlesByUser) track by $index">
-                    <li id="publication{{$index}}"><a href="" ng-click="updateArticle($index)">Title</a></li>
-                  </div>
-                </ul>
-              </div>
-            </div>
-            <!-- Dialog action bar -->
-            <div class="dialogActionBar">
-              <!-- Buttons -->
-              <a class="buttonTouchTarget" id="buttonOneTouchTarget" href=""
-                ng-click="cancelMyAccount()">
-                <div class="buttonFlat" id="cancelMyAccount" fit>CANCEL</div>
-              </a>
-              <!-- This comment removes 4px gap between buttons-->
-              <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
-                ng-click="submitSignup">
-                <div class="buttonFlat buttonCustom" id="submitSignupForm">SUBMIT</div>
-              </a>
-            </div>
-          </div>
-        </form>
+      </form>
       </div>
     </div>
 
 
     <!-- ARTICLE AND COMMENT -->
-    <div id="listArticles" ng-repeat="i in getNumber(numberArticles) track by $index">
+    <div id="listArticles" ng-repeat="article in listArticles track by $index">
       <!-- ARTICLE DIALOG -->
       <div id="article{{$index}}" ng-show="showArticle" class="wrapperOutside wrapperInsideArticle">
       <div class="wrapperInside wrapperInsideArticle">
@@ -268,27 +235,25 @@
         <div class="dialogContainer widthArticle">
           <!-- Dialog title and body -->
           <div class="dialogContent article">
-            <div class="dialogContentTitle" name="titleArticle{{$index}}" id="titleArticle{{$index}}"><a class="buttonTouchTarget" href="" ng-click="addFavorite($index)"><img id="favoriteIcon{{$index}}"
-          src="public/img/icon/heart-outline.png" class="icon iconTitle"></a>Title Article</div>
+            <div class="dialogContentTitle"><a class="buttonTouchTarget" href="" ng-click="addFavorite($index)"><img ng-show="userConnected" id="favoriteIcon{{$index}}"
+          src="public/img/icon/heart-outline.png" class="icon iconTitle"></a>{{article.title}}</div>
             <div class="dialogContentBody">
-              <div id="bodyArticle{{$index}}" name="bodyArticle{{$index}}">Body Article</div>
+              <div id="bodyArticle{{$index}}" ng-model="article[$parent.$index].body" name="bodyArticle{{$index}}">{{article.body}}</div>
               <img src="public/img/peng.jpg" class="imgArticle"></img>
             </div>
           </div>
           <!-- Dialog action bar -->
           <div class="dialogActionBar">
             <!-- Buttons -->
-            <div class="buttonFlat" id="authorComment" fit>Author</div>
-          <div class="buttonFlat" fit>-</div>
-          <div class="buttonFlat" id="dateComment" fit>Date</div>
+            <div class="buttonFlat" fit>{{article.author}} - {{article.date}}</div>
              <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
-              ng-click="openCommentsByArticle($index)">
+              ng-click="getCommentsByArticle($index)">
               <div class="buttonFlat buttonCustom" id="showCommentButton"><img
           src="public/img/icon/comment-text-outline(1).png" class="icon">SHOW COMMENTS</div>
               </a>
             <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
               ng-click="openCommentForm($index)">
-              <div class="buttonFlat buttonCustom" id="addCommentButton"><img
+              <div ng-show="userConnected" class="buttonFlat buttonCustom" id="addCommentButton"><img
           src="public/img/icon/comment-plus-outline.png" class="icon">ADD
                 A COMMENT</div>
               </a>
@@ -298,21 +263,21 @@
       </div>
 
       <!-- DISPLAY COMMENT-->
-      <div id="comment{{$index}}" class="wrapperOutside displayComment" ng-repeat="i in getNumber(numberComments) track by $index">
+      <div id="commentDialog" class="wrapperOutside" ng-repeat="comment in listComments track by $index">
       <div class="wrapperInside">
       <!-- Dialog -->
         <div class="dialogContainer widthComment">
         <!-- Dialog title and body -->
           <div class="dialogContent">
             <div class="dialogContentBody">
-              <label class="inputComment" id="bodyComment">body comment</label>
+              <label id="idComment{{$index}}"># {{comment.id}}</label><a href="" ng-click="deleteComment()"><img
+          src="public/img/icon/delete.png" class="iconMyAccount"></img></a><br/>
+              <label class="inputComment">{{comment.body}}</label>
             </div>
         </div>
         <!-- Dialog action bar -->
         <div class="dialogActionBar">
-          <div class="buttonFlat" id="authorComment" fit>Author</div>
-          <div class="buttonFlat" fit>-</div>
-          <div class="buttonFlat" id="dateComment" fit>Date</div>
+          <div class="buttonFlat" id="authorComment{{$index}}" fit>{{comment.author}} - {{comment.date_creation}}</div>
         </div>
       </div>
       </div>
@@ -320,7 +285,7 @@
 
 
       <!-- ADD A COMMENT DIALOG -->
-      <div id="addComment{{$index}}" class="wrapperOutside displayComment">
+    <div id="addComment{{$index}}" class="wrapperOutside displayComment">
       <div class="wrapperInside">
       <!-- Dialog -->
         <div class="dialogContainer widthComment">

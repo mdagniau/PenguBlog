@@ -42,25 +42,25 @@ client.connect(function(err) {
 	});
 
     //Creation table articles
- /* client.query('CREATE TABLE IF NOT EXISTS articles(id integer PRIMARY KEY, title VARCHAR(255) not null, body TEXT not null, author integer not null, date_creation date not null, date_update date CONSTRAINT author FOREIGN KEY (author) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
+  client.query('CREATE TABLE IF NOT EXISTS articles(id integer PRIMARY KEY, title VARCHAR(255) not null, body TEXT not null, author text not null, date integer not null, CONSTRAINT pk_author FOREIGN KEY (author) REFERENCES users (pseudo) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
-	});*/
+	});
     
     //Creation table comments
-  client.query('CREATE TABLE IF NOT EXISTS comments(id integer NOT NULL, id_article integer NOT NULL, body text NOT NULL, id_user integer NOT NULL, date_creation date NOT NULL, CONSTRAINT id PRIMARY KEY (id), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT id_user FOREIGN KEY (id_user) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
+  client.query('CREATE TABLE IF NOT EXISTS commentaires(id integer NOT NULL, id_article integer NOT NULL, body text NOT NULL, author text NOT NULL, date_creation integer NOT NULL, CONSTRAINT id PRIMARY KEY (id), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT pk_author FOREIGN KEY (author) REFERENCES users (pseudo) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
 	});
 
     //Creation table favoritesArticles
-   client.query('CREATE TABLE IF NOT EXISTS favoritesArticles( id_user integer NOT NULL, id_article integer NOT NULL, CONSTRAINT "id_favoritesArticles" PRIMARY KEY (id_user, id_article), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT id_user FOREIGN KEY (id_user) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
+  /* client.query('CREATE TABLE IF NOT EXISTS favoritesArticles( id_user integer NOT NULL, id_article integer NOT NULL, CONSTRAINT "id_favoritesArticles" PRIMARY KEY (id_user, id_article), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT id_user FOREIGN KEY (id_user) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
-	});
+	});*/
 
     console.log('All tables are created');
 
@@ -104,13 +104,35 @@ client.connect(function(err) {
         });    
     });
 
+    app.post('/deleteUser', bodyParser.json(), function(req, res) {
+        var query = 'DELETE FROM users WHERE pseudo = \'' +req.body.pseudo+'\'' ;
+        client.query(query, function(err, result) {
+          if(err) {
+            console.error('error running query', err);
+          }
+          res.send('OK'); 
+        });    
+    });
+
      /*********************************************************
      * GET REQUESTS ARTICLES
      *********************************************************/
 
     app.post('/addArticle', bodyParser.json(), function(req, res) {
       client.query('SELECT id FROM articles', function(err, result) {
-        var query = 'INSERT INTO articles(id, pseudo, lastname, firstname, email, password) VALUES('+result.rowCount+',\''+req.body.pseudo+'\',\''+req.body.lastName+'\',\''+req.body.firstName+'\',\''+req.body.email+'\',\''+req.body.password+'\')';
+        var query = 'INSERT INTO articles(id, title, body, date, author) VALUES('+result.rowCount+',\''+req.body.title+'\',\''+req.body.body+'\','+req.body.date+', \''+req.body.author+'\')';
+        client.query(query, function(err, result) {
+          if(err) {
+            console.error('error running query', err);
+          }
+          res.send('OK'); 
+        });
+      });      
+    });
+
+    app.post('/deleteArticle', bodyParser.json(), function(req, res) {
+      client.query('SELECT id FROM articles', function(err, result) {
+        var query = 'DELETE FROM articles WHERE id =\''+req.body.idArticle+'\'';
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
@@ -132,8 +154,24 @@ client.connect(function(err) {
     });
 
     app.post('/getArticlesByUser', bodyParser.json(), function(req, res) {
-      client.query('SELECT id FROM users WHERE pseudo = \''+req.body.pseudo + '\'', function(err, result) {
-        var query = 'SELECT * FROM articles WHERE author = \''+result.rows[0].id +'\'';
+      var query = 'SELECT * FROM articles WHERE author = \''+req.body.pseudo +'\'';
+      client.query(query, function(err, result) {
+        if(err) {
+          console.error('error running query', err);
+        }
+        res.statusCode = 200;
+        res.send(result);
+      });
+    });
+
+    /*********************************************************
+     * GET REQUESTS FAVORITE ARTICLES
+     *********************************************************/
+
+    app.post('/addFavorite', bodyParser.json(), function(req, res) {
+      client.query('SELECT id FROM favoritesarticles', function(err, result) {
+        var query = 'INSERT INTO favoritesarticles(id, author, id_article) VALUES('+0+',\''+req.body.pseudo +'\', \'' + req.body.article+'\')';
+        console.log("query "+query);
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
@@ -144,30 +182,35 @@ client.connect(function(err) {
       });
     });
 
+    app.post('/deleteFavorite', bodyParser.json(), function(req, res) {
+      var query = 'DELETE FROM favoritesarticles WHERE user = \''+req.body.pseudo+'\' AND id_article = \''+req.body.article +'\'';
+      client.query(query, function(err, result) {
+        if(err) {
+          console.error('error running query', err);
+        }
+        res.statusCode = 200;
+        res.send(result);
+      });
+    });
+
+    app.post('/getFavoritesByUser', bodyParser.json(), function(req, res) {
+      var query = 'SELECT id_article FROM favoritesarticles WHERE user = \''+req.body.pseudo+'\' ';
+      client.query(query, function(err, result) {
+        if(err) {
+          console.error('error running query', err);
+        }
+        res.statusCode = 200;
+        res.send(result);
+      });
+    });
+
      /*********************************************************
      * GET REQUESTS COMMENTS
      *********************************************************/
 
     app.post('/addComment', bodyParser.json(), function(req, res) {
-      var queryAuthor = 'SELECT id FROM users WHERE pseudo = \''+req.body.author + '\'';
-      var idAuthor;
-      client.query(queryAuthor, function(err, result) {
-        if(err)
-        {
-          console.error('error running query', err); 
-        }
-        idAuthor = result.rows[0].id;
-      });
-      console.log("idAuthor "+idAuthor);
-      client.query('SELECT id FROM comments', function(err, result) {
-        var row = 0;
-        if(typeof result !== 'undefined'){
-          row = result.rowCount;
-          console.error('on est dans le if');
-        }
-        var date = new Date;
-        
-        var query = 'INSERT INTO comments(id, id_article, body, id_user, date_creation) VALUES('+row+',\''+req.body.article+'\',\''+req.body.bodyComment+'\',\''+idAuthor+'\','+ date +')';
+      client.query('SELECT id FROM commentaires', function(err, result) {
+        var query = 'INSERT INTO commentaires(id, id_article, body, id_user, date_creation) VALUES('+result.rowCount+',\''+req.body.article+'\',\''+req.body.bodyComment+'\',\''+req.body.author+'\','+ req.body.date +')';
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
@@ -177,8 +220,18 @@ client.connect(function(err) {
       }); 
     });  
 
+    app.post('/deleteComment', bodyParser.json(), function(req, res) {
+      var query = 'DELETE FROM commentaires WHERE id= \''+req.body.idComment+'\'';
+      client.query(query, function(err, result) {
+        if(err) {
+          console.error('error running query', err);
+        }
+        res.send('OK'); 
+      }); 
+    }); 
+
     app.post('/getCommentsByArticle', bodyParser.json(), function(req, res) {
-      var query = 'SELECT * FROM comments WHERE id_article = \''+req.body.article+'\'';
+      var query = 'SELECT * FROM commentaires WHERE id_article = \''+req.body.article+'\'';
       client.query(query, function(err, result) {
         if(err) {
           console.error('error running query', err);
