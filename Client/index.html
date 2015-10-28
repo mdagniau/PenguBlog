@@ -168,9 +168,9 @@
                   ng-model="user.email" ng-disabled="editVar"></input><br />
                 <span class="formLabels">Password </span><input class="formInputs" type="password" placeholder="Password"
                   ng-model="user.password" ng-disabled="editVar"></input><br /><br/>
-                  <a href="" ng-click="editAccount()"><img
-          src="public/img/icon/edit.png"></img> EDIT MY ACCOUNT</a><a href="" ng-click="deleteAccount()"><img
-          src="public/img/icon/delete.png"></img> DELETE MY ACCOUNT</a>
+                  <div><a href="" ng-click="editAccount()" class="buttonFlat buttonTouchTarget linkMyAccount"><img
+          src="public/img/icon/edit.png" class="iconPenCommment"></img>EDIT</a><a href="" ng-click="deleteAccount()" class="buttonFlat buttonTouchTarget linkMyAccount"><img
+          src="public/img/icon/delete.png"></img> DELETE</a></div>
               </div>
             </div>
             <!-- Dialog action bar -->
@@ -270,14 +270,15 @@
         <!-- Dialog title and body -->
           <div class="dialogContent">
             <div class="dialogContentBody">
-              <label id="idComment{{$index}}"># {{comment.id}}</label><a href="" ng-click="deleteComment()"><img
-          src="public/img/icon/delete.png" class="iconMyAccount"></img></a><br/>
-              <label class="inputComment">{{comment.body}}</label>
+              <label id="idComment{{$index}}" class="dialogContentTitle "># {{comment.id}}</label><br/>
+              <input class="inputComment" ng-disabled="true" placeholder="{{comment.body}}"></input>
             </div>
         </div>
         <!-- Dialog action bar -->
-        <div class="dialogActionBar">
+        <div class="dialogActionBar actionBarComment">
           <div class="buttonFlat" id="authorComment{{$index}}" fit>{{comment.author}} - {{comment.date_creation}}</div>
+          <div><a href="" ng-click="deleteComment(comment.id)" ng-if="comment.author == user.pseudo"><img src="public/img/icon/delete.png" class="iconMyAccount"></img></a><a href="" ng-click="editComment(comment.id)" ng-if="comment.author == user.pseudo"><img
+          src="public/img/icon/edit.png" class="iconMyAccount iconPenComment"></img></a></div>
         </div>
       </div>
       </div>

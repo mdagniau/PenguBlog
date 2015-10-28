@@ -154,7 +154,6 @@ blog.controller('blogCtrl', function ($scope, $http) {
       var user = {pseudo: $scope.user.pseudo};
       $http.post('http://localhost:8090/getFavoritesByUser', user).then(function(resp){   
         $scope.listFavoriteByUser = resp.data.rows;
-        debugger;
       });
     }
 
@@ -192,7 +191,6 @@ blog.controller('blogCtrl', function ($scope, $http) {
                           author: $scope.user.pseudo,
                           date: Math.floor((Date.now())/1000)
       } 
-      debugger;
       $http.post('http://localhost:8090/addArticle', newArticle).then(function(resp){
           getArticles();
       });
@@ -210,27 +208,33 @@ blog.controller('blogCtrl', function ($scope, $http) {
       $scope.showArticle = true;
     }
 
+    $scope.deleteArticle = function(index){
+      var articleDeleted = {  idArticle: index} 
+       if (confirm("Are you sure you want to delete this article?")) { 
+        $http.post('http://localhost:8090/deleteArticle', articleDeleted).then(function(resp){   
+        });
+        $scope.editVar = true;
+        $scope.userConnected = true;
+        $scope.invite = false;       
+        $scope.showAccount = false;
+        $scope.showArticle = true;
+        getArticles();
+       }
+    }
+
 
     /*******************************************
     * METHODS COMMENTS
     ********************************************/
 
     $scope.getCommentsByArticle = function(index){
-      //if(document.getElementById("comment"+index).style.display === 'none'){
-       // 
-     /* }
-      else{        
-        document.getElementById("comment"+index).style.display = 'none';
-      }*/
       var article = { article : index }
        $http.post('http://localhost:8090/getCommentsByArticle', article).then(function(resp){
         $scope.listComments = resp.data.rows;
         for(var i=0; i<resp.data.rowCount; i++){
           $scope.listComments[i].date_creation = ((new Date(Number(1000*resp.data.rows[i].date_creation))).toString()).split("GMT", 1);     
         }
-
-        });
-      //document.getElementById("commentDialog"+index).style.display = 'table';
+      });
       $scope.showLogin = false;
       $scope.showSignup = false;
       $scope.showArticle = true;
@@ -251,16 +255,25 @@ blog.controller('blogCtrl', function ($scope, $http) {
        document.getElementById("addComment"+index).style.display = 'none';
        $scope.showArticle = true;
     }
+
     $scope.cancelComment = function (index){
       $scope.showArticle = true;
       document.getElementById("addComment"+index).style.display = 'none';
     }
-    $scope.cancelMyAccount = function (){
-      $scope.showAccount = false;
-      $scope.editVar = true;
-      $scope.showArticle = true;
-    }
 
+    $scope.deleteComment = function(index){
+      var commentDeleted = {  idComment: index} 
+      debugger;
+       if (confirm("Are you sure you want to delete this comment?")) { 
+        $http.post('http://localhost:8090/deleteComment', commentDeleted).then(function(resp){   
+        });
+        $scope.editVar = true;
+        $scope.userConnected = true;
+        $scope.invite = false;       
+        $scope.showAccount = false;
+        $scope.showArticle = true;
+      }
+    }
 
     /*******************************************
     * METHODS ACCOUNT
@@ -282,14 +295,22 @@ blog.controller('blogCtrl', function ($scope, $http) {
 
     $scope.deleteAccount = function(){
       var userDeleted = {  pseudo: $scope.user.pseudo} 
-      $http.post('http://localhost:8090/deleteUser', userDeleted).then(function(resp){   
+       if (confirm("Are you sure you want to delete your account?")) { 
+        $http.post('http://localhost:8090/deleteUser', userDeleted).then(function(resp){   
         });
-      $scope.user.pseudo ="";
-      $scope.user.password ="";
-      $scope.editVar = true;
-      $scope.userConnected = false;
-      $scope.invite = true;       
+        $scope.user.pseudo ="";
+        $scope.user.password ="";
+        $scope.editVar = true;
+        $scope.userConnected = false;
+        $scope.invite = true;       
+        $scope.showAccount = false;
+        $scope.showArticle = true;
+       }
+    }
+
+    $scope.cancelMyAccount = function (){
       $scope.showAccount = false;
+      $scope.editVar = true;
       $scope.showArticle = true;
     }
 })

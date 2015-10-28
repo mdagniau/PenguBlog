@@ -270,8 +270,14 @@ material design language.
  *********************************************/
 .iconMyAccount{
   margin : 0em!important;
+  margin-top: 1em !important;
   padding : 0em!important;
   float:right;
+}
+
+.linkMyAccount{
+  text-decoration: none !important;
+  padding-top: 1em !important;
 }
 
 
@@ -330,7 +336,7 @@ material design language.
  *********************************************/
 
 .widthComment{
-  min-width: 50em !important;
+  min-width: 49em !important;
   min-height: 2em !important;
   height: 2em !important;
   padding-top: 0em !important;
@@ -346,9 +352,21 @@ material design language.
   height: 2em !important;
 }
 
+.actionBarComment{
+  background-color: aliceblue;
+}
+
+.iconPenComment{
+  margin-top: 1.2em !important;
+}
+
 .displayComment{
  display: none;
-  margin-left: 
+}
+
+#commentDialog{
+ margin-bottom: 1em !important;
+ margin-left: 1em !important;
 }
 
 /*********************************************

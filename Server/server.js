@@ -35,7 +35,7 @@ client.connect(function(err) {
 
   	
 //Creation table users
-  client.query('CREATE TABLE IF NOT EXISTS users(id integer PRIMARY KEY, pseudo VARCHAR(255) not null, lastname VARCHAR(255) not null, firstname VARCHAR(255) not null, email VARCHAR(255) not null, password VARCHAR(255) not null, CONSTRAINT uniq_pseudo UNIQUE (pseudo))', function(err, result) {
+ /* client.query('CREATE TABLE IF NOT EXISTS users(id integer PRIMARY KEY, pseudo VARCHAR(255) not null, lastname VARCHAR(255) not null, firstname VARCHAR(255) not null, email VARCHAR(255) not null, password VARCHAR(255) not null, CONSTRAINT uniq_pseudo UNIQUE (pseudo))', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
@@ -53,7 +53,7 @@ client.connect(function(err) {
     	if(err) {
 			return console.error('error running query', err);
     	}
-	});
+	});*/
 
     //Creation table favoritesArticles
   /* client.query('CREATE TABLE IF NOT EXISTS favoritesArticles( id_user integer NOT NULL, id_article integer NOT NULL, CONSTRAINT "id_favoritesArticles" PRIMARY KEY (id_user, id_article), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT id_user FOREIGN KEY (id_user) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
@@ -170,8 +170,7 @@ client.connect(function(err) {
 
     app.post('/addFavorite', bodyParser.json(), function(req, res) {
       client.query('SELECT id FROM favoritesarticles', function(err, result) {
-        var query = 'INSERT INTO favoritesarticles(id, author, id_article) VALUES('+0+',\''+req.body.pseudo +'\', \'' + req.body.article+'\')';
-        console.log("query "+query);
+        var query = 'INSERT INTO favoritesarticles(id, author, id_article) VALUES('+result.rowCount+',\''+req.body.pseudo +'\', \'' + req.body.article+'\')';
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
