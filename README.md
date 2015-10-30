@@ -2,6 +2,8 @@
 
 Project by Marie DAGNIAU and Estèphe SUSTRAC
 
+This project is a blog about pingouin. 
+
 Technologies used :
   * Angular JS
   * Material Design Lite
