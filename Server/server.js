@@ -35,32 +35,32 @@ client.connect(function(err) {
 
   	
 //Creation table users
- /* client.query('CREATE TABLE IF NOT EXISTS users(id integer PRIMARY KEY, pseudo VARCHAR(255) not null, lastname VARCHAR(255) not null, firstname VARCHAR(255) not null, email VARCHAR(255) not null, password VARCHAR(255) not null, CONSTRAINT uniq_pseudo UNIQUE (pseudo))', function(err, result) {
+ client.query('CREATE TABLE IF NOT EXISTS users(id integer NOT NULL, pseudo character varying(255) not null, lastname character varying(255) not null, firstname character varying(255) not null, email character varying(255) not null, password character varying(255) not null, CONSTRAINT users_pkey PRIMARY KEY (id), CONSTRAINT uniq_pseudo UNIQUE (pseudo))', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
 	});
 
-    //Creation table articles
-  client.query('CREATE TABLE IF NOT EXISTS articles(id integer PRIMARY KEY, title VARCHAR(255) not null, body TEXT not null, author text not null, date integer not null, CONSTRAINT pk_author FOREIGN KEY (author) REFERENCES users (pseudo) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
+  //Creation table articles
+  client.query('CREATE TABLE IF NOT EXISTS articles(id integer NOT NULL, titlecharacter character varying(255) not null, body TEXT not null, author text not null, date bigint not null, CONSTRAINT articles_pkey PRIMARY KEY (id))', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
 	});
     
-    //Creation table comments
-  client.query('CREATE TABLE IF NOT EXISTS commentaires(id integer NOT NULL, id_article integer NOT NULL, body text NOT NULL, author text NOT NULL, date_creation integer NOT NULL, CONSTRAINT id PRIMARY KEY (id), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT pk_author FOREIGN KEY (author) REFERENCES users (pseudo) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
+ //Creation table commentaires
+  client.query('CREATE TABLE IF NOT EXISTS commentaires(id integer NOT NULL, id_article integer NOT NULL, body text NOT NULL, author text NOT NULL, date_creation bigint NOT NULL, CONSTRAINT id PRIMARY KEY (id))', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
-	});*/
+	});
 
-    //Creation table favoritesArticles
-  /* client.query('CREATE TABLE IF NOT EXISTS favoritesArticles( id_user integer NOT NULL, id_article integer NOT NULL, CONSTRAINT "id_favoritesArticles" PRIMARY KEY (id_user, id_article), CONSTRAINT id_article FOREIGN KEY (id_article) REFERENCES articles (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION, CONSTRAINT id_user FOREIGN KEY (id_user) REFERENCES users (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION)', function(err, result) {
+  //Creation table favoritesArticles
+  client.query('CREATE TABLE IF NOT EXISTS favoritesarticles( author text NOT NULL, id_article integer NOT NULL, id integer NOT NULL, CONSTRAINT "pk_id" PRIMARY KEY (id))', function(err, result) {
     	if(err) {
 			return console.error('error running query', err);
     	}
-	});*/
+	});
 
     console.log('All tables are created');
 
