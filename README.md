@@ -16,4 +16,20 @@ Functionnalities:
   * Like our favorite articles 
   * ...
 
-/!\ There is a design problem with publishing articles and comments but server side, it's good.
+/!\ There is a design problem with publishing articles and comments but on the server side, it's good.
+
+
+# Installation
+You need to have PostgreSQL on your PC and NodeJS and clone the github project into your PC.
+
+Run Server:
+ * Open a window shell and using a command line, go to the project folder . 
+ * Go to the Server directory.
+ * Run command : "node server.js" to run the server.
+
+Open website :
+ * In your Windows Explorer window, go to the project folder .
+ * Go to the Client directory.
+ * Open index.html with your browser.
+
+You need to sign up to access all functionnalities of the website.
