@@ -19,7 +19,7 @@ Functionnalities:
 /!\ There is a design problem with publishing articles and comments but on the server side, it's good.
 
 
-# Installation
+#Installation
 You need to have PostgreSQL on your PC and NodeJS and clone the github project into your PC.
 
 Run Server:
@@ -33,3 +33,9 @@ Open website :
  * Open index.html with your browser.
 
 You need to sign up to access all functionnalities of the website.
+
+#Credentials
+Material Design Lite : http://www.getmdl.io/
+AngularJS : https://angularjs.org/
+Node.js : https://nodejs.org/en/
+Icon : https://materialdesignicons.com/
