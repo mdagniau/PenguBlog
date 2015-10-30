@@ -15,3 +15,5 @@ Functionnalities:
   * Manage our publications : delete, edit our articles & our comments
   * Like our favorite articles 
   * ...
+
+/!\ There is a design problem with publishing articles and comments but server side, it's good.
