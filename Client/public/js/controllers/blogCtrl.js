@@ -5,7 +5,11 @@ blog.controller('blogCtrl', function ($scope, $http) {
     $scope.editVar = true;
     $scope.listFavoriteByUser = null;
 
-    $http({
+
+    getArticles();
+
+  function getArticles(){
+      $http({
       method : 'get',
       url :'http://localhost:8090/getArticles'
     }).then(function(resp){
@@ -14,6 +18,7 @@ blog.controller('blogCtrl', function ($scope, $http) {
           $scope.listArticles[i].date = ((new Date(Number(1000*resp.data.rows[i].date))).toString()).split("GMT", 1);     
         }
     });
+  }
 
     $scope.login = function (){
       $scope.showLogin = true;
@@ -98,8 +103,10 @@ blog.controller('blogCtrl', function ($scope, $http) {
     }
 
     $scope.cancelLogin = function (){
-      $scope.user.pseudo = "";
-      $scope.user.password = ""; 
+      if($scope.user !== undefined){
+        $scope.user.pseudo = "";
+        $scope.user.password = "";
+      }
       $scope.showLogin = false;
       $scope.showArticle = true;
     }
@@ -129,11 +136,15 @@ blog.controller('blogCtrl', function ($scope, $http) {
 
     }
     $scope.cancelSignup = function (){
-      $scope.newUser.pseudo = "";
-      $scope.newUser.firstname = ""; 
-      $scope.newUser.lastname = "";
-      $scope.newUser.email = "";
-      $scope.newUser.password = "";
+      if($scope.newUser !== undefined){
+        $scope.newUser.pseudo = "";
+        $scope.newUser.firstname = ""; 
+        $scope.newUser.lastname = "";
+        $scope.newUser.email = "";
+        $scope.newUser.password = "";
+        $scope.newUser.confirmPassword = "";  
+      }
+
       $scope.showSignup = false;
       $scope.showArticle = true;
     }
@@ -158,14 +169,15 @@ blog.controller('blogCtrl', function ($scope, $http) {
     }
 
 
-    /*$scope.updateArticle = function(index){
-      $scope.showLogin = false;
-      $scope.showSignup = false;
-      $scope.showArticle = false;
-      $scope.showAccount = false;
-      $scope.newArticle = true;
-      $scope.settings = false;     
-    }*/
+    $scope.updateArticle = function(index){
+      var articleChanged = { title: $scope.article.title, 
+                            body: $scope.article.body,
+                            id: $scope.article.id
+        } 
+        $http.post('http://localhost:8090/updateArticle', articleChanged).then(function(resp){   
+          getArticles();
+        });
+    }
 
     $scope.addFavorite = function(index){
       var nameElement = "favoriteIcon"+index;
@@ -192,18 +204,19 @@ blog.controller('blogCtrl', function ($scope, $http) {
                           date: Math.floor((Date.now())/1000)
       } 
       $http.post('http://localhost:8090/addArticle', newArticle).then(function(resp){
-          getArticles();
+        $scope.newArticle.title = "";
+        $scope.newArticle.body = ""; 
+        $scope.newArticle = false;
+        $scope.showArticle = true;
+        getArticles();
       });
-
-      $scope.newArticle.title = "";
-      $scope.newArticle.body = ""; 
-      $scope.newArticle = false;
-      $scope.showArticle = true;
     }
 
     $scope.cancelNewArticle = function(){
-      $scope.newArticle.title = "";
-      $scope.newArticle.body = ""; 
+      if($scope.newArticle !== undefined){
+        $scope.newArticle.title = "";
+        $scope.newArticle.body = "";         
+      }
       $scope.newArticle = false;
       $scope.showArticle = true;
     }
@@ -212,13 +225,13 @@ blog.controller('blogCtrl', function ($scope, $http) {
       var articleDeleted = {  idArticle: index} 
        if (confirm("Are you sure you want to delete this article?")) { 
         $http.post('http://localhost:8090/deleteArticle', articleDeleted).then(function(resp){   
+          $scope.editVar = true;
+          $scope.userConnected = true;
+          $scope.invite = false;       
+          $scope.showAccount = false;
+          $scope.showArticle = true;
+          getArticles();
         });
-        $scope.editVar = true;
-        $scope.userConnected = true;
-        $scope.invite = false;       
-        $scope.showAccount = false;
-        $scope.showArticle = true;
-        getArticles();
        }
     }
 
@@ -232,8 +245,18 @@ blog.controller('blogCtrl', function ($scope, $http) {
        $http.post('http://localhost:8090/getCommentsByArticle', article).then(function(resp){
         $scope.listComments = resp.data.rows;
         for(var i=0; i<resp.data.rowCount; i++){
-          $scope.listComments[i].date_creation = ((new Date(Number(1000*resp.data.rows[i].date_creation))).toString()).split("GMT", 1);     
+          $scope.listComments[i].date_creation = ((new Date(Number(1000*resp.data.rows[i].date_creation))).toString()).split("GMT", 1);  
         }
+        var varShow = "commentDialog"+index;
+        var commentForm = document.getElementById(varShow);
+        if(commentForm.style.display == 'none'){
+          commentForm.style.display = 'table';
+          commentForm.style.marginBottom = '10em';           
+        } 
+        else{
+          commentForm.style.display = 'none';
+          commentForm.style.marginBottom = '0em';            
+        } 
       });
       $scope.showLogin = false;
       $scope.showSignup = false;
@@ -244,26 +267,39 @@ blog.controller('blogCtrl', function ($scope, $http) {
     }
 
     $scope.submitCommentForm = function(index){
-       var newComment = { bodyComment : $scope.bodyComment,
+       var newComment = { bodyComment : $scope.newCommentByUser.body,
                           author : $scope.user.pseudo,
                           article : index,
                           date: Math.floor((Date.now())/1000)
        }
-       $http.post('http://localhost:8090/addComment', newComment).then(function(resp){   
+       debugger;
+       $http.post('http://localhost:8090/addComment', newComment).then(function(resp){        
+        $scope.bodyComment="";
+        document.getElementById("addComment"+index).style.display = 'none';
+        $scope.showArticle = true;  
+      });
+
+    }
+
+    $scope.updateComment = function(index){
+      var commentChanged = { body: $scope.comment.body,
+                             id: $scope.comment.id
+        } 
+        $http.post('http://localhost:8090/updateComment', commentChanged).then(function(resp){   
+          getArticles();
         });
-       $scope.bodyComment="";
-       document.getElementById("addComment"+index).style.display = 'none';
-       $scope.showArticle = true;
     }
 
     $scope.cancelComment = function (index){
+      if($scope.bodyComment !== undefined){
+        $scope.bodyComment = "";
+      }
       $scope.showArticle = true;
       document.getElementById("addComment"+index).style.display = 'none';
     }
 
     $scope.deleteComment = function(index){
       var commentDeleted = {  idComment: index} 
-      debugger;
        if (confirm("Are you sure you want to delete this comment?")) { 
         $http.post('http://localhost:8090/deleteComment', commentDeleted).then(function(resp){   
         });

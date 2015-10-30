@@ -8,7 +8,7 @@
 <link rel="stylesheet"
   href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <script type="text/javascript"
-  src="public/js/librairies/jquery-ui.min.js"></script>
+  src="public/js/librairies/jquery-2.1.4.js"></script>
 <script type="text/javascript" src="public/js/librairies/angular.min.js"></script>
 <script type="text/javascript"
   src="public/js/librairies/material.min.js"></script>
@@ -115,16 +115,14 @@
                   ng-model="newUser.lastname" required></input><br /><span class="formLabels">Firstname </span><input
                   class="formInputs" type="text" placeholder="Firstname"
                   ng-model="newUser.firstname" required></input> <br />
-                <div class="form-group" ng-class="{ 'has-error' : signupForm.email.$invalid && signupForm.email.$pristine }">
                   <span class="formLabels">Email</span>
-                  <input type="email" name="email" class="form-control" placeholder="Email" ng-model="newUser.email" required>
-                  <p ng-show="signupForm.email.$invalid && !signupForm.email.$pristine" class="help-block">Enter a valid email.</p>
-                </div>
+                  <input class="formInputs" type="email" style="margin-left:1.4em !important" name="email" class="form-control" placeholder="Email" ng-model="newUser.email" required>
+                  <span ng-show="signupForm.email.$invalid && !signupForm.email.$pristine"><img src="public/img/icon/close-circle.png"></img></span>
                 <span class="formLabels">Password </span><input class="formInputs" type="password" placeholder="Password"
                   ng-model="newUser.password" required></input><br /> <span class="formLabels">Confirm password </span><input
                   class="formInputs" type="password"
                   placeholder="Confirm password"
-                  ng-model="newUser.confirmPassword" required></input>
+                  ng-model="newUser.confirmPassword" required></input><span ng-show="newUser.password !== newUser.confirmPassword" class="help-block"><img src="public/img/icon/close-circle.png"></img></span><span ng-hide="!(newUser.password).length" class="help-block"><img ng-show="newUser.password === newUser.confirmPassword" src="public/img/icon/ok.png"></img></span>
               </div>
             </div>
             <!-- Dialog action bar -->
@@ -227,7 +225,7 @@
 
 
     <!-- ARTICLE AND COMMENT -->
-    <div id="listArticles" ng-repeat="article in listArticles track by $index">
+    <div id="listArticles" style="width:100%" ng-repeat="article in listArticles track by $index">
       <!-- ARTICLE DIALOG -->
       <div id="article{{$index}}" ng-show="showArticle" class="wrapperOutside wrapperInsideArticle">
       <div class="wrapperInside wrapperInsideArticle">
@@ -235,10 +233,11 @@
         <div class="dialogContainer widthArticle">
           <!-- Dialog title and body -->
           <div class="dialogContent article">
-            <div class="dialogContentTitle"><a class="buttonTouchTarget" href="" ng-click="addFavorite($index)"><img ng-show="userConnected" id="favoriteIcon{{$index}}"
-          src="public/img/icon/heart-outline.png" class="icon iconTitle"></a>{{article.title}}</div>
+            <div class="dialogContentTitle"><a class="buttonTouchTarget" href="" ng-click="addFavorite(article.id)"><img ng-show="userConnected" id="favoriteIcon{{article.id}}" src="public/img/icon/heart-outline.png" class="icon iconTitle"></a>{{article.title}} <a href="" ng-click="deleteArticle(article.id)" ng-if="article.author == user.pseudo"><img title="Delete article" src="public/img/icon/delete.png" style="float: right"></img></a><a href="" ng-click="updateArticle(article.id)" ng-if="article.author == user.pseudo"><img title="Edit article" src="public/img/icon/edit.png" class="iconPenArticle"></img></a><a href="" ng-click="updateArticle(article.id)" ng-if="article.author == user.pseudo"><img
+          src="public/img/icon/telegram(1).png" style="float:right" title="Update Article"></img></a>
+            </div>
             <div class="dialogContentBody">
-              <div id="bodyArticle{{$index}}" ng-model="article[$parent.$index].body" name="bodyArticle{{$index}}">{{article.body}}</div>
+              <textarea id="articleBodyEdited" class="inputNewArticle bodyArticle" ng-model="article[$parent.$index].body" ng-readonly="editArticle{{article.id}}" placeholder="{{article.body}}"></textarea>
               <img src="public/img/peng.jpg" class="imgArticle"></img>
             </div>
           </div>
@@ -247,55 +246,57 @@
             <!-- Buttons -->
             <div class="buttonFlat" fit>{{article.author}} - {{article.date}}</div>
              <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
-              ng-click="getCommentsByArticle($index)">
-              <div class="buttonFlat buttonCustom" id="showCommentButton"><img
-          src="public/img/icon/comment-text-outline(1).png" class="icon">SHOW COMMENTS</div>
+              ng-click="getCommentsByArticle(article.id)">
+              <div class="buttonFlat buttonCustom" id="showCommentButton"><img title="Show comments" src="public/img/icon/comment-text-outline(1).png" class="icon"></div>
               </a>
             <a class="buttonTouchTarget" id="buttonTwoTouchTarget" href=""
-              ng-click="openCommentForm($index)">
-              <div ng-show="userConnected" class="buttonFlat buttonCustom" id="addCommentButton"><img
-          src="public/img/icon/comment-plus-outline.png" class="icon">ADD
-                A COMMENT</div>
+              ng-click="openCommentForm(article.id)">
+              <div ng-show="userConnected" class="buttonFlat buttonCustom" id="addCommentButton"><img title="Add a comment" src="public/img/icon/comment-plus-outline.png" class="icon"></div>
               </a>
           </div>
         </div>
-      </div>
-      </div>
+
 
       <!-- DISPLAY COMMENT-->
-      <div id="commentDialog" class="wrapperOutside" ng-repeat="comment in listComments track by $index">
+      <div id="commentDialog{{$index}}">
+      <div class="wrapperOutside" ng-repeat="comment in listComments track by $index">
       <div class="wrapperInside">
       <!-- Dialog -->
         <div class="dialogContainer widthComment">
         <!-- Dialog title and body -->
           <div class="dialogContent">
             <div class="dialogContentBody">
-              <label id="idComment{{$index}}" class="dialogContentTitle "># {{comment.id}}</label><br/>
-              <input class="inputComment" ng-disabled="true" placeholder="{{comment.body}}"></input>
+              <label id="idComment{{article.id}}" class="dialogContentTitle "># {{comment.id}}</label><br/>
+              <input class="inputComment" ng-readonly="true" placeholder="{{comment.body}}"></input><a href="" ng-click="updateComment(comment.id)" ng-if="ng-readonly == false"><img
+          src="public/img/icon/telegram(1).png" class="iconMyAccount iconPenComment"></img></a>
             </div>
         </div>
         <!-- Dialog action bar -->
         <div class="dialogActionBar actionBarComment">
-          <div class="buttonFlat" id="authorComment{{$index}}" fit>{{comment.author}} - {{comment.date_creation}}</div>
-          <div><a href="" ng-click="deleteComment(comment.id)" ng-if="comment.author == user.pseudo"><img src="public/img/icon/delete.png" class="iconMyAccount"></img></a><a href="" ng-click="editComment(comment.id)" ng-if="comment.author == user.pseudo"><img
+          <div class="buttonFlat" fit>{{comment.author}} - {{comment.date_creation}}</div>
+          <div><a href="" ng-click="deleteComment(comment.id)" ng-if="comment.author == user.pseudo"><img src="public/img/icon/delete.png" class="iconMyAccount"></img></a><a href="" ng-click="updateComment(comment.id)" ng-if="comment.author == user.pseudo"><img
           src="public/img/icon/edit.png" class="iconMyAccount iconPenComment"></img></a></div>
         </div>
       </div>
       </div>
-    </div>
+    </div> 
+    </div>  
+  </div>
+          </div> 
 
 
       <!-- ADD A COMMENT DIALOG -->
     <div id="addComment{{$index}}" class="wrapperOutside displayComment">
       <div class="wrapperInside">
       <!-- Dialog -->
+       <form novalidate class="simple-form">
         <div class="dialogContainer widthComment">
         <!-- Dialog title and body -->
           <div class="dialogContent">
             <div class="dialogContentTitle">Add comment...</div>
             <div class="dialogContentBody">
               <input class="inputComment" type="text" placeholder="Add your comment here..."
-                 id="bodyComment" ng-model="comment.body"></input>
+                 ng-model="newCommentByUser.body"></input>
             </div>
         </div>
         <!-- Dialog action bar -->
@@ -313,6 +314,7 @@
           </a>
         </div>
       </div>
+    </form>
       </div>
     </div>
   

@@ -84,7 +84,7 @@ client.connect(function(err) {
 
     app.post('/addUser', bodyParser.json(), function(req, res) {
       client.query('SELECT id FROM users', function(err, result) {
-        var query = 'INSERT INTO users(id, pseudo, lastname, firstname, email, password) VALUES('+result.rowCount+',\''+req.body.pseudo+'\',\''+req.body.lastName+'\',\''+req.body.firstName+'\',\''+req.body.email+'\',\''+req.body.password+'\')';
+        var query = 'INSERT INTO users(id, pseudo, lastname, firstname, email, password) VALUES('+(result.rowCount+1)+',\''+req.body.pseudo+'\',\''+req.body.lastName+'\',\''+req.body.firstName+'\',\''+req.body.email+'\',\''+req.body.password+'\')';
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
@@ -120,7 +120,7 @@ client.connect(function(err) {
 
     app.post('/addArticle', bodyParser.json(), function(req, res) {
       client.query('SELECT id FROM articles', function(err, result) {
-        var query = 'INSERT INTO articles(id, title, body, date, author) VALUES('+result.rowCount+',\''+req.body.title+'\',\''+req.body.body+'\','+req.body.date+', \''+req.body.author+'\')';
+        var query = 'INSERT INTO articles(id, title, body, date, author) VALUES('+(result.rowCount+1)+',\''+req.body.title+'\',\''+req.body.body+'\','+req.body.date+', \''+req.body.author+'\')';
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
@@ -128,6 +128,16 @@ client.connect(function(err) {
           res.send('OK'); 
         });
       });      
+    });
+
+    app.post('/updateArticle', bodyParser.json(), function(req, res) {
+      var query = 'UPDATE articles SET body = \''+req.body.body+'\', title = \''+req.body.title+'\' WHERE id = \'' +req.body.id+'\'' ;
+      client.query(query, function(err, result) {
+          if(err) {
+            console.error('error running query', err);
+          }
+          res.send('OK'); 
+        });    
     });
 
     app.post('/deleteArticle', bodyParser.json(), function(req, res) {
@@ -170,7 +180,7 @@ client.connect(function(err) {
 
     app.post('/addFavorite', bodyParser.json(), function(req, res) {
       client.query('SELECT id FROM favoritesarticles', function(err, result) {
-        var query = 'INSERT INTO favoritesarticles(id, author, id_article) VALUES('+result.rowCount+',\''+req.body.pseudo +'\', \'' + req.body.article+'\')';
+        var query = 'INSERT INTO favoritesarticles(id, author, id_article) VALUES('+(result.rowCount+1)+',\''+req.body.pseudo +'\', \'' + req.body.article+'\')';
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
@@ -209,7 +219,7 @@ client.connect(function(err) {
 
     app.post('/addComment', bodyParser.json(), function(req, res) {
       client.query('SELECT id FROM commentaires', function(err, result) {
-        var query = 'INSERT INTO commentaires(id, id_article, body, id_user, date_creation) VALUES('+result.rowCount+',\''+req.body.article+'\',\''+req.body.bodyComment+'\',\''+req.body.author+'\','+ req.body.date +')';
+        var query = 'INSERT INTO commentaires(id, id_article, body, author, date_creation) VALUES('+(result.rowCount+1)+',\''+req.body.article+'\',\''+req.body.bodyComment+'\',\''+req.body.author+'\','+ req.body.date +')';
         client.query(query, function(err, result) {
           if(err) {
             console.error('error running query', err);
@@ -218,6 +228,16 @@ client.connect(function(err) {
         });
       }); 
     });  
+
+    app.post('/updateComment', bodyParser.json(), function(req, res) {
+      var query = 'UPDATE commentaires SET body = \''+req.body.body+'\' WHERE id = \'' +req.body.id+'\'' ;
+      client.query(query, function(err, result) {
+       if(err) {
+          console.error('error running query', err);
+        }
+        res.send('OK'); 
+      });    
+    });
 
     app.post('/deleteComment', bodyParser.json(), function(req, res) {
       var query = 'DELETE FROM commentaires WHERE id= \''+req.body.idComment+'\'';
